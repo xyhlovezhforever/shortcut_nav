@@ -1,0 +1,1955 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>面试题快捷导航</title>
+    <!-- Marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        /* 自定义滚动条 - 霓虹风格 */
+        ::-webkit-scrollbar {
+            width: 14px;
+        }
+
+        ::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            box-shadow: inset 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+
+        ::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #667eea, #764ba2);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.8);
+        }
+
+        ::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #764ba2, #667eea);
+            box-shadow: 0 0 15px rgba(102, 126, 234, 1);
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #0a0a0f;
+            min-height: 100vh;
+            padding: 0;
+            overflow: hidden;
+            position: relative;
+            color: white;
+        }
+
+        /* 动态网格背景 */
+        body::before {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-image:
+                linear-gradient(rgba(102, 126, 234, 0.05) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(102, 126, 234, 0.05) 1px, transparent 1px);
+            background-size: 50px 50px;
+            animation: gridMove 20s linear infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gridMove {
+            0% {
+                transform: translate(0, 0);
+            }
+            100% {
+                transform: translate(50px, 50px);
+            }
+        }
+
+        /* 动态渐变背景 - 更炫酷 */
+        body::after {
+            content: '';
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: radial-gradient(circle at 20% 50%, rgba(102, 126, 234, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 80% 80%, rgba(118, 75, 162, 0.15) 0%, transparent 50%),
+                        radial-gradient(circle at 40% 90%, rgba(255, 100, 200, 0.1) 0%, transparent 40%);
+            animation: gradientShift 10s ease-in-out infinite;
+            pointer-events: none;
+            z-index: 0;
+        }
+
+        @keyframes gradientShift {
+            0%, 100% {
+                opacity: 0.8;
+                transform: scale(1) rotate(0deg);
+            }
+            33% {
+                opacity: 1;
+                transform: scale(1.1) rotate(5deg);
+            }
+            66% {
+                opacity: 0.9;
+                transform: scale(1.05) rotate(-5deg);
+            }
+        }
+
+        .container {
+            max-width: 100%;
+            width: 100%;
+            margin: 0 auto;
+            position: relative;
+            z-index: 1;
+            display: flex;
+            flex-direction: column;
+            height: 100vh;
+            padding: 0 30px;
+        }
+
+        /* 流星雨效果 */
+        .meteor {
+            position: fixed;
+            width: 2px;
+            height: 80px;
+            background: linear-gradient(180deg, rgba(255,255,255,0) 0%, rgba(255,255,255,0.8) 50%, rgba(102,126,234,0) 100%);
+            border-radius: 50%;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.8);
+            animation: meteorFall linear;
+            pointer-events: none;
+            z-index: 1;
+        }
+
+        @keyframes meteorFall {
+            0% {
+                transform: translateX(0) translateY(0) rotate(45deg);
+                opacity: 1;
+            }
+            100% {
+                transform: translateX(-300px) translateY(300px) rotate(45deg);
+                opacity: 0;
+            }
+        }
+
+        header {
+            text-align: center;
+            margin-bottom: 0;
+            animation: fadeInDown 1s ease;
+            position: relative;
+            background: transparent;
+            padding: 20px 0 15px;
+            flex-shrink: 0;
+        }
+
+        /* 标题彩虹扫光效果 */
+        h1 {
+            color: white;
+            font-size: 4em;
+            font-weight: 700;
+            margin-bottom: 10px;
+            background: linear-gradient(90deg,
+                #667eea 0%,
+                #764ba2 20%,
+                #f093fb 40%,
+                #4facfe 60%,
+                #43e97b 80%,
+                #667eea 100%);
+            background-size: 200% auto;
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            animation: rainbowShine 3s linear infinite, titleFloat 3s ease-in-out infinite;
+            text-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+            filter: drop-shadow(0 0 20px rgba(102, 126, 234, 0.6));
+        }
+
+        @keyframes rainbowShine {
+            0% {
+                background-position: 0% center;
+            }
+            100% {
+                background-position: 200% center;
+            }
+        }
+
+        @keyframes titleFloat {
+            0%, 100% {
+                transform: translateY(0) scale(1);
+            }
+            50% {
+                transform: translateY(-10px) scale(1.02);
+            }
+        }
+
+        .subtitle {
+            color: rgba(255,255,255,0.9);
+            font-size: 1.3em;
+            text-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+            animation: subtitleGlow 2s ease-in-out infinite;
+        }
+
+        @keyframes subtitleGlow {
+            0%, 100% {
+                opacity: 0.8;
+                text-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+            }
+            50% {
+                opacity: 1;
+                text-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+            }
+        }
+
+        .search-box {
+            max-width: 900px;
+            margin: 0 auto;
+            animation: fadeIn 1.2s ease;
+            position: relative;
+            background: transparent;
+            padding: 15px 0 20px;
+            flex-shrink: 0;
+            width: 100%;
+        }
+
+        .search-container {
+            position: relative;
+            display: flex;
+            align-items: center;
+        }
+
+        /* 搜索结果下拉框 - 霓虹风格 */
+        .search-results {
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            margin-top: 10px;
+            background: rgba(15, 15, 25, 0.98);
+            border-radius: 20px;
+            box-shadow:
+                0 15px 40px rgba(0,0,0,0.5),
+                0 0 20px rgba(102, 126, 234, 0.3),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            backdrop-filter: blur(20px);
+            max-height: 400px;
+            overflow-y: auto;
+            display: none;
+            z-index: 1000;
+            animation: slideDown 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .search-results.show {
+            display: block;
+        }
+
+        .search-results::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .search-results::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+
+        .search-results::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+        }
+
+        .search-result-item {
+            padding: 15px 20px;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.1);
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            gap: 15px;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .search-result-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            width: 0;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(102, 126, 234, 0.2), transparent);
+            transition: width 0.5s ease;
+        }
+
+        .search-result-item:hover::before {
+            width: 100%;
+        }
+
+        .search-result-item:last-child {
+            border-bottom: none;
+        }
+
+        .search-result-item:hover {
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.15), rgba(118, 75, 162, 0.15));
+            transform: translateX(10px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.3);
+        }
+
+        .search-result-icon {
+            font-size: 2em;
+            filter: drop-shadow(2px 2px 4px rgba(102, 126, 234, 0.5));
+        }
+
+        .search-result-info {
+            flex: 1;
+        }
+
+        .search-result-title {
+            font-size: 1em;
+            font-weight: 600;
+            color: #fff;
+            margin-bottom: 3px;
+        }
+
+        .search-result-url {
+            font-size: 0.85em;
+            color: rgba(255,255,255,0.6);
+            word-break: break-all;
+        }
+
+        .search-result-badge {
+            padding: 4px 10px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 12px;
+            font-size: 0.75em;
+            font-weight: 600;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+
+        .no-results {
+            padding: 30px;
+            text-align: center;
+            color: rgba(255,255,255,0.5);
+            font-size: 0.95em;
+        }
+
+        /* 搜索框 - 霓虹发光 */
+        .search-input {
+            width: 100%;
+            padding: 22px 70px 22px 30px;
+            border: none;
+            border-radius: 50px;
+            font-size: 18px;
+            background: rgba(15, 15, 25, 0.8);
+            color: white;
+            box-shadow:
+                0 10px 30px rgba(0,0,0,0.5),
+                0 0 20px rgba(102, 126, 234, 0.2),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .search-input::placeholder {
+            color: rgba(255,255,255,0.5);
+        }
+
+        .search-input:focus {
+            outline: none;
+            background: rgba(15, 15, 25, 0.95);
+            box-shadow:
+                0 15px 50px rgba(0,0,0,0.6),
+                0 0 30px rgba(102, 126, 234, 0.6),
+                inset 0 1px 0 rgba(255,255,255,0.2);
+            transform: translateY(-3px);
+            border-color: rgba(102, 126, 234, 0.8);
+        }
+
+        .search-btn {
+            position: absolute;
+            right: 10px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            border: none;
+            width: 52px;
+            height: 52px;
+            border-radius: 50%;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.6), 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .search-btn:hover {
+            transform: scale(1.15) rotate(90deg);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.8), 0 0 30px rgba(102, 126, 234, 0.5);
+        }
+
+        .search-btn:active {
+            transform: scale(1.05) rotate(90deg);
+        }
+
+        .search-btn::before {
+            content: "";
+            width: 20px;
+            height: 20px;
+            border: 3px solid white;
+            border-radius: 50%;
+            position: absolute;
+        }
+
+        .search-btn::after {
+            content: "";
+            width: 3px;
+            height: 10px;
+            background: white;
+            position: absolute;
+            transform: rotate(45deg);
+            bottom: 14px;
+            right: 14px;
+        }
+
+        .nav-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(260px, 1fr));
+            gap: 40px;
+            margin-top: 40px;
+            perspective: 1000px;
+        }
+
+        /* 内容区域包装 */
+        .content-wrapper {
+            flex: 1;
+            overflow-y: auto;
+            overflow-x: hidden;
+            padding: 0;
+            margin-top: 20px;
+        }
+
+        .content-wrapper::-webkit-scrollbar {
+            width: 14px;
+        }
+
+        .content-wrapper::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+            box-shadow: inset 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+
+        .content-wrapper::-webkit-scrollbar-thumb {
+            background: linear-gradient(180deg, #667eea, #764ba2);
+            border-radius: 10px;
+            border: 2px solid transparent;
+            background-clip: padding-box;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.8);
+        }
+
+        .content-wrapper::-webkit-scrollbar-thumb:hover {
+            background: linear-gradient(180deg, #764ba2, #667eea);
+            box-shadow: 0 0 15px rgba(102, 126, 234, 1);
+        }
+
+        .content-wrapper section {
+            margin-bottom: 40px;
+        }
+
+        /* 卡片 3D 透视效果 */
+        .nav-item {
+            background: transparent;
+            border-radius: 25px;
+            padding: 45px 25px;
+            text-align: center;
+            text-decoration: none;
+            color: white;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
+            box-shadow: none;
+            animation: fadeInUp 0.8s ease backwards;
+            position: relative;
+            overflow: hidden;
+            border: none;
+            backdrop-filter: none;
+            transform-style: preserve-3d;
+            will-change: transform;
+        }
+
+        .nav-item:hover {
+            transform: translateY(-20px) scale(1.1);
+            background: linear-gradient(135deg, rgba(15, 15, 25, 0.9), rgba(25, 25, 40, 0.85));
+            box-shadow:
+                0 30px 60px rgba(0,0,0,0.7),
+                0 0 50px rgba(102, 126, 234, 0.8),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+            backdrop-filter: blur(15px);
+        }
+
+        .nav-item:active {
+            transform: translateY(-10px) scale(1.03);
+        }
+
+        .nav-icon {
+            font-size: 4.5em;
+            margin-bottom: 20px;
+            display: block;
+            filter: drop-shadow(0 0 15px rgba(102, 126, 234, 0.9));
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
+            position: relative;
+            z-index: 1;
+            animation: iconFloat 3s ease-in-out infinite;
+        }
+
+        @keyframes iconFloat {
+            0%, 100% {
+                transform: translateY(0) rotate(0deg);
+            }
+            25% {
+                transform: translateY(-5px) rotate(-5deg);
+            }
+            50% {
+                transform: translateY(-8px) rotate(0deg);
+            }
+            75% {
+                transform: translateY(-5px) rotate(5deg);
+            }
+        }
+
+        .nav-item:hover .nav-icon {
+            transform: scale(1.4) rotateY(360deg);
+            filter: drop-shadow(0 0 25px rgba(102, 126, 234, 1));
+        }
+
+        .nav-title {
+            font-size: 1.15em;
+            font-weight: 600;
+            color: white;
+            position: relative;
+            z-index: 1;
+            transition: all 0.4s cubic-bezier(0.23, 1, 0.320, 1);
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        .nav-item:hover .nav-title {
+            color: #fff;
+            transform: scale(1.15);
+            text-shadow: 0 0 20px rgba(102, 126, 234, 1);
+        }
+
+        .category-title {
+            color: white;
+            font-size: 2.2em;
+            font-weight: 700;
+            margin: 60px 0 30px;
+            text-shadow: 0 0 20px rgba(102, 126, 234, 0.6);
+            animation: fadeIn 1s ease;
+            position: relative;
+            padding-left: 25px;
+        }
+
+        .category-title::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 6px;
+            height: 80%;
+            background: linear-gradient(180deg, #667eea, #764ba2);
+            border-radius: 10px;
+            box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% {
+                box-shadow: 0 0 20px rgba(102, 126, 234, 0.8);
+            }
+            50% {
+                box-shadow: 0 0 30px rgba(102, 126, 234, 1);
+            }
+        }
+
+        @keyframes fadeInDown {
+            from {
+                opacity: 0;
+                transform: translateY(-50px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        @keyframes fadeIn {
+            from {
+                opacity: 0;
+            }
+            to {
+                opacity: 1;
+            }
+        }
+
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(50px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .nav-item:nth-child(1) { animation-delay: 0.1s; }
+        .nav-item:nth-child(2) { animation-delay: 0.15s; }
+        .nav-item:nth-child(3) { animation-delay: 0.2s; }
+        .nav-item:nth-child(4) { animation-delay: 0.25s; }
+        .nav-item:nth-child(5) { animation-delay: 0.3s; }
+        .nav-item:nth-child(6) { animation-delay: 0.35s; }
+        .nav-item:nth-child(7) { animation-delay: 0.4s; }
+        .nav-item:nth-child(8) { animation-delay: 0.45s; }
+        .nav-item:nth-child(9) { animation-delay: 0.5s; }
+        .nav-item:nth-child(10) { animation-delay: 0.55s; }
+        .nav-item:nth-child(11) { animation-delay: 0.6s; }
+        .nav-item:nth-child(12) { animation-delay: 0.65s; }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            color: rgba(255,255,255,0.7);
+            padding: 40px 20px;
+            animation: fadeIn 2s ease;
+            font-size: 0.95em;
+            border-top: 1px solid rgba(102, 126, 234, 0.2);
+            backdrop-filter: blur(10px);
+            text-shadow: 0 0 10px rgba(102, 126, 234, 0.3);
+        }
+
+        footer p {
+            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+        }
+
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 2.5em;
+            }
+
+            .nav-grid {
+                grid-template-columns: repeat(auto-fill, minmax(120px, 1fr));
+                gap: 15px;
+            }
+
+            .nav-item {
+                padding: 20px 10px;
+            }
+        }
+
+        /* 粒子系统 - 更炫酷 */
+        .particles {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 0;
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            width: 3px;
+            height: 3px;
+            background: radial-gradient(circle, rgba(102, 126, 234, 1), rgba(102, 126, 234, 0));
+            border-radius: 50%;
+            animation: particleFloat 20s infinite;
+            box-shadow:
+                0 0 10px rgba(102, 126, 234, 0.8),
+                0 0 20px rgba(102, 126, 234, 0.5),
+                0 0 30px rgba(102, 126, 234, 0.3);
+        }
+
+        @keyframes particleFloat {
+            0% {
+                transform: translateY(0) translateX(0) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(-15vh) translateX(15px) scale(1.2);
+            }
+            90% {
+                opacity: 1;
+            }
+            100% {
+                transform: translateY(-100vh) translateX(150px) scale(0.3);
+                opacity: 0;
+            }
+        }
+
+        /* 添加按钮样式 - 霓虹风格 */
+        .add-btn {
+            background: linear-gradient(135deg, rgba(15, 15, 25, 0.9), rgba(25, 25, 40, 0.85));
+            border-radius: 20px;
+            padding: 35px 18px;
+            text-align: center;
+            text-decoration: none;
+            color: #667eea;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
+            box-shadow:
+                0 10px 30px rgba(0,0,0,0.5),
+                0 0 20px rgba(102, 126, 234, 0.2),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            position: relative;
+            overflow: hidden;
+            cursor: pointer;
+            border: 2px dashed rgba(102, 126, 234, 0.5);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .add-btn::before {
+            content: '';
+            position: absolute;
+            top: -2px;
+            left: -2px;
+            right: -2px;
+            bottom: -2px;
+            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #4facfe);
+            border-radius: 20px;
+            opacity: 0;
+            z-index: -1;
+            filter: blur(10px);
+            transition: opacity 0.5s ease;
+            animation: neonRotate 4s linear infinite;
+        }
+
+        .add-btn:hover::before {
+            opacity: 0.6;
+        }
+
+        .add-btn:hover {
+            transform: translateY(-15px) scale(1.08);
+            box-shadow:
+                0 25px 50px rgba(0,0,0,0.6),
+                0 0 40px rgba(102, 126, 234, 0.6),
+                inset 0 1px 0 rgba(255,255,255,0.3);
+            background: linear-gradient(135deg, rgba(25, 25, 40, 0.95), rgba(35, 35, 50, 0.9));
+            border-color: rgba(102, 126, 234, 0.8);
+            color: white;
+        }
+
+        .add-btn .nav-icon {
+            font-size: 3.3em;
+            margin-bottom: 15px;
+            transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
+            position: relative;
+            z-index: 1;
+            filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.6));
+        }
+
+        .add-btn:hover .nav-icon {
+            transform: scale(1.3) rotate(180deg);
+            filter: drop-shadow(0 0 20px rgba(102, 126, 234, 1));
+        }
+
+        .add-btn .nav-title {
+            position: relative;
+            z-index: 1;
+        }
+
+        /* 删除按钮 - 霓虹风格 */
+        .delete-btn {
+            position: absolute;
+            top: 8px;
+            right: 8px;
+            background: linear-gradient(135deg, #ff4757, #ff3838);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 18px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.6), 0 0 20px rgba(255, 71, 87, 0.3);
+        }
+
+        .delete-btn::before,
+        .delete-btn::after {
+            content: "";
+            position: absolute;
+            width: 16px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+        }
+
+        .delete-btn::before {
+            transform: rotate(45deg);
+        }
+
+        .delete-btn::after {
+            transform: rotate(-45deg);
+        }
+
+        .delete-btn:hover {
+            background: linear-gradient(135deg, #ff3838, #ff1f1f);
+            transform: scale(1.2) rotate(180deg);
+            box-shadow: 0 6px 20px rgba(255, 71, 87, 0.8), 0 0 30px rgba(255, 71, 87, 0.5);
+        }
+
+        .nav-item.custom:hover .delete-btn {
+            display: flex;
+            animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        @keyframes bounceIn {
+            0% {
+                transform: scale(0) rotate(0deg);
+                opacity: 0;
+            }
+            60% {
+                transform: scale(1.3) rotate(180deg);
+                opacity: 1;
+            }
+            100% {
+                transform: scale(1) rotate(180deg);
+                opacity: 1;
+            }
+        }
+
+        /* 编辑按钮 - 霓虹风格 */
+        .edit-btn {
+            position: absolute;
+            top: 8px;
+            left: 8px;
+            background: linear-gradient(135deg, #ffa502, #ff8c00);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 16px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(255, 165, 2, 0.6), 0 0 20px rgba(255, 165, 2, 0.3);
+        }
+
+        .edit-btn::before {
+            content: "";
+            position: absolute;
+            width: 12px;
+            height: 12px;
+            border-left: 2px solid white;
+            border-bottom: 2px solid white;
+            transform: rotate(-45deg) translate(2px, -2px);
+        }
+
+        .edit-btn::after {
+            content: "";
+            position: absolute;
+            width: 6px;
+            height: 2px;
+            background: white;
+            transform: rotate(45deg) translate(-4px, -4px);
+            border-radius: 1px;
+        }
+
+        .edit-btn:hover {
+            background: linear-gradient(135deg, #ff8c00, #ff7700);
+            transform: scale(1.2) rotate(-30deg);
+            box-shadow: 0 6px 20px rgba(255, 165, 2, 0.8), 0 0 30px rgba(255, 165, 2, 0.5);
+        }
+
+        .nav-item.custom:hover .edit-btn {
+            display: flex;
+            animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* 模态框样式 - 深色主题 */
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.9);
+            animation: fadeIn 0.3s ease;
+            backdrop-filter: blur(15px);
+        }
+
+        .modal-content {
+            background: linear-gradient(135deg, rgba(15, 15, 25, 0.98), rgba(25, 25, 40, 0.95));
+            margin: 8% auto;
+            padding: 40px;
+            border-radius: 25px;
+            width: 90%;
+            max-width: 520px;
+            box-shadow:
+                0 30px 80px rgba(0,0,0,0.7),
+                0 0 40px rgba(102, 126, 234, 0.3),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            animation: modalZoomIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+        @keyframes modalZoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5) translateY(-100px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-80px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
+        }
+
+        .modal-header {
+            font-size: 2em;
+            margin-bottom: 30px;
+            color: #fff;
+            font-weight: 700;
+            text-align: center;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+        }
+
+        .form-group {
+            margin-bottom: 25px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            color: rgba(255,255,255,0.9);
+            font-weight: 700;
+            font-size: 0.95em;
+            letter-spacing: 0.5px;
+        }
+
+        .form-group input {
+            width: 100%;
+            padding: 14px 18px;
+            border: 2px solid rgba(102, 126, 234, 0.3);
+            border-radius: 12px;
+            font-size: 15px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(0, 0, 0, 0.3);
+            color: white;
+            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
+        }
+
+        .form-group input::placeholder {
+            color: rgba(255,255,255,0.4);
+        }
+
+        .form-group input:focus {
+            outline: none;
+            border-color: #667eea;
+            box-shadow:
+                0 0 0 4px rgba(102,126,234,0.2),
+                0 0 20px rgba(102,126,234,0.3),
+                inset 0 2px 4px rgba(0,0,0,0.3);
+            transform: translateY(-2px);
+        }
+
+        .modal-buttons {
+            display: flex;
+            gap: 15px;
+            margin-top: 30px;
+        }
+
+        .btn {
+            flex: 1;
+            padding: 16px 28px;
+            border: none;
+            border-radius: 12px;
+            font-size: 16px;
+            font-weight: 700;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            letter-spacing: 0.5px;
+        }
+
+        .btn-primary {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            box-shadow: 0 6px 20px rgba(102,126,234,0.5), 0 0 20px rgba(102,126,234,0.3);
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 30px rgba(102,126,234,0.6), 0 0 30px rgba(102,126,234,0.4);
+        }
+
+        .btn-primary:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: linear-gradient(135deg, rgba(100,100,120,0.5), rgba(80,80,100,0.5));
+            color: white;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .btn-secondary:hover {
+            background: linear-gradient(135deg, rgba(120,120,140,0.6), rgba(100,100,120,0.6));
+            transform: translateY(-3px);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
+        }
+
+        .emoji-picker {
+            display: grid;
+            grid-template-columns: repeat(8, 1fr);
+            gap: 8px;
+            margin-top: 12px;
+            padding: 15px;
+            background: rgba(0,0,0,0.3);
+            border-radius: 15px;
+            max-height: 220px;
+            overflow-y: auto;
+            border: 2px solid rgba(102, 126, 234, 0.2);
+            box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
+        }
+
+        .emoji-picker::-webkit-scrollbar {
+            width: 8px;
+        }
+
+        .emoji-picker::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+
+        .emoji-picker::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+
+        .emoji-item {
+            font-size: 28px;
+            cursor: pointer;
+            padding: 10px;
+            text-align: center;
+            border-radius: 10px;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            background: rgba(255,255,255,0.05);
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .emoji-item:hover {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            transform: scale(1.4);
+            box-shadow: 0 4px 15px rgba(102,126,234,0.5), 0 0 20px rgba(102,126,234,0.3);
+            z-index: 10;
+        }
+
+        /* Markdown预览模态框 - 深色主题 */
+        .md-preview-modal {
+            display: none;
+            position: fixed;
+            z-index: 1001;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0,0,0,0.95);
+            animation: fadeIn 0.3s ease;
+            backdrop-filter: blur(15px);
+        }
+
+        .md-preview-content {
+            background: linear-gradient(135deg, rgba(15, 15, 25, 0.98), rgba(25, 25, 40, 0.95));
+            margin: 2% auto;
+            padding: 0;
+            border-radius: 25px;
+            width: 95%;
+            max-width: 1400px;
+            max-height: 92vh;
+            box-shadow:
+                0 30px 80px rgba(0,0,0,0.8),
+                0 0 40px rgba(102, 126, 234, 0.4),
+                inset 0 1px 0 rgba(255,255,255,0.1);
+            animation: modalZoomIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+            border: 1px solid rgba(102, 126, 234, 0.3);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .md-preview-header {
+            padding: 25px 30px;
+            border-bottom: 2px solid rgba(102, 126, 234, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+        }
+
+        .md-preview-title {
+            font-size: 1.5em;
+            font-weight: 700;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-shadow: 0 0 20px rgba(102, 126, 234, 0.5);
+        }
+
+        .md-preview-close {
+            background: linear-gradient(135deg, #ff4757, #ff3838);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            font-size: 26px;
+            cursor: pointer;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.6), 0 0 20px rgba(255, 71, 87, 0.3);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .md-preview-close::before,
+        .md-preview-close::after {
+            content: "";
+            position: absolute;
+            width: 20px;
+            height: 2px;
+            background: white;
+            border-radius: 2px;
+        }
+
+        .md-preview-close::before {
+            transform: rotate(45deg);
+        }
+
+        .md-preview-close::after {
+            transform: rotate(-45deg);
+        }
+
+        .md-preview-close:hover {
+            transform: scale(1.15) rotate(180deg);
+            box-shadow: 0 6px 20px rgba(255, 71, 87, 0.8), 0 0 30px rgba(255, 71, 87, 0.5);
+        }
+
+        .md-preview-body {
+            padding: 30px 40px;
+            overflow-y: auto;
+            flex: 1;
+        }
+
+        .md-preview-body::-webkit-scrollbar {
+            width: 12px;
+        }
+
+        .md-preview-body::-webkit-scrollbar-track {
+            background: rgba(0,0,0,0.2);
+            border-radius: 10px;
+        }
+
+        .md-preview-body::-webkit-scrollbar-thumb {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            border-radius: 10px;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+
+        /* Markdown样式 - 深色主题 */
+        .markdown-content {
+            line-height: 1.8;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .markdown-content h1 {
+            font-size: 2.2em;
+            font-weight: 700;
+            margin: 20px 0 15px;
+            padding-bottom: 10px;
+            border-bottom: 3px solid #667eea;
+            color: #667eea;
+            text-shadow: 0 0 15px rgba(102, 126, 234, 0.5);
+        }
+
+        .markdown-content h2 {
+            font-size: 1.8em;
+            font-weight: 700;
+            margin: 18px 0 12px;
+            padding-bottom: 8px;
+            border-bottom: 2px solid #764ba2;
+            color: #764ba2;
+            text-shadow: 0 0 10px rgba(118, 75, 162, 0.5);
+        }
+
+        .markdown-content h3 {
+            font-size: 1.4em;
+            font-weight: 600;
+            margin: 15px 0 10px;
+            color: rgba(255,255,255,0.9);
+        }
+
+        .markdown-content p {
+            margin: 10px 0;
+            text-align: justify;
+        }
+
+        .markdown-content ul, .markdown-content ol {
+            margin: 10px 0;
+            padding-left: 30px;
+        }
+
+        .markdown-content li {
+            margin: 5px 0;
+        }
+
+        .markdown-content code {
+            background: rgba(102, 126, 234, 0.2);
+            padding: 3px 8px;
+            border-radius: 6px;
+            font-family: 'Consolas', 'Monaco', monospace;
+            font-size: 0.9em;
+            color: #f093fb;
+            border: 1px solid rgba(102, 126, 234, 0.3);
+        }
+
+        .markdown-content pre {
+            background: linear-gradient(135deg, rgba(0,0,0,0.5), rgba(10,10,20,0.5));
+            padding: 20px;
+            border-radius: 12px;
+            overflow-x: auto;
+            margin: 15px 0;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5), 0 0 30px rgba(102, 126, 234, 0.2);
+            border: 1px solid rgba(102, 126, 234, 0.2);
+        }
+
+        .markdown-content pre code {
+            background: none;
+            padding: 0;
+            border: none;
+            color: #f8f8f2;
+            font-size: 0.95em;
+        }
+
+        .markdown-content blockquote {
+            border-left: 4px solid #667eea;
+            padding-left: 20px;
+            margin: 15px 0;
+            color: rgba(255,255,255,0.7);
+            font-style: italic;
+            background: linear-gradient(90deg, rgba(102, 126, 234, 0.1), transparent);
+            padding: 15px 20px;
+            border-radius: 0 8px 8px 0;
+        }
+
+        .markdown-content a {
+            color: #667eea;
+            text-decoration: none;
+            border-bottom: 1px solid transparent;
+            transition: all 0.3s ease;
+        }
+
+        .markdown-content a:hover {
+            color: #764ba2;
+            border-bottom-color: #764ba2;
+            text-shadow: 0 0 10px rgba(118, 75, 162, 0.5);
+        }
+
+        .markdown-content table {
+            border-collapse: collapse;
+            width: 100%;
+            margin: 15px 0;
+            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+            border-radius: 8px;
+            overflow: hidden;
+        }
+
+        .markdown-content th {
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            padding: 12px;
+            text-align: left;
+            font-weight: 600;
+        }
+
+        .markdown-content td {
+            padding: 10px 12px;
+            border-bottom: 1px solid rgba(102, 126, 234, 0.2);
+            background: rgba(0,0,0,0.2);
+        }
+
+        .markdown-content tr:hover {
+            background: rgba(102, 126, 234, 0.1);
+        }
+
+        .markdown-content hr {
+            border: none;
+            height: 2px;
+            background: linear-gradient(90deg, transparent, #667eea, transparent);
+            margin: 25px 0;
+            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
+        }
+
+        .markdown-content img {
+            max-width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.5);
+            margin: 15px 0;
+        }
+
+        .md-preview-footer {
+            padding: 20px 30px;
+            border-top: 2px solid rgba(102, 126, 234, 0.2);
+            background: linear-gradient(135deg, rgba(102, 126, 234, 0.1), rgba(118, 75, 162, 0.1));
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .md-file-info {
+            color: rgba(255,255,255,0.7);
+            font-size: 0.9em;
+        }
+
+        .md-action-btn {
+            padding: 12px 24px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 600;
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.5), 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .md-action-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.6), 0 0 30px rgba(102, 126, 234, 0.4);
+        }
+
+        /* 加载动画 */
+        .md-loading {
+            text-align: center;
+            padding: 40px;
+            color: #667eea;
+            font-size: 1.2em;
+        }
+
+        .md-loading::after {
+            content: '...';
+            animation: dots 1.5s infinite;
+        }
+
+        @keyframes dots {
+            0%, 20% { content: '.'; }
+            40% { content: '..'; }
+            60%, 100% { content: '...'; }
+        }
+
+        /* 预览按钮 - 霓虹风格 */
+        .preview-btn {
+            position: absolute;
+            bottom: 8px;
+            left: 8px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 50%;
+            width: 32px;
+            height: 32px;
+            font-size: 16px;
+            cursor: pointer;
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 10;
+            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.6), 0 0 20px rgba(102, 126, 234, 0.3);
+        }
+
+        .preview-btn::before {
+            content: "";
+            position: absolute;
+            width: 16px;
+            height: 10px;
+            border: 2px solid white;
+            border-radius: 50%;
+        }
+
+        .preview-btn::after {
+            content: "";
+            position: absolute;
+            width: 6px;
+            height: 6px;
+            background: white;
+            border-radius: 50%;
+        }
+
+        .preview-btn:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+            transform: scale(1.2);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.8), 0 0 30px rgba(102, 126, 234, 0.5);
+        }
+
+        .nav-item.custom:hover .preview-btn {
+            display: flex;
+            animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+        }
+
+        /* 编辑按钮位置调整(当有预览按钮时) */
+        .nav-item.custom:hover .edit-btn {
+            left: 50px;
+        }
+
+        /* 页面加载动画 */
+        .page-loader {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: #0a0a0f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            transition: opacity 0.5s ease, visibility 0.5s ease;
+        }
+
+        .page-loader.hidden {
+            opacity: 0;
+            visibility: hidden;
+        }
+
+        .loader-content {
+            text-align: center;
+        }
+
+        .loader-spinner {
+            width: 80px;
+            height: 80px;
+            border: 4px solid rgba(102, 126, 234, 0.1);
+            border-top: 4px solid #667eea;
+            border-radius: 50%;
+            animation: spin 1s linear infinite;
+            margin: 0 auto 20px;
+            box-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        .loader-text {
+            color: #667eea;
+            font-size: 1.2em;
+            font-weight: 600;
+            text-shadow: 0 0 15px rgba(102, 126, 234, 0.6);
+        }
+    </style>
+</head>
+<body>
+    <!-- 页面加载动画 -->
+    <div class="page-loader" id="pageLoader">
+        <div class="loader-content">
+            <div class="loader-spinner"></div>
+            <div class="loader-text">正在加载极致炫酷体验...</div>
+        </div>
+    </div>
+
+    <div class="particles" id="particles"></div>
+
+    <div class="container">
+        <header>
+            <h1>💯 面试题库</h1>
+            <p class="subtitle">全面的技术面试题集合</p>
+        </header>
+
+        <div class="search-box">
+            <div class="search-container">
+                <input type="text" class="search-input" placeholder="搜索或输入网址... (按 / 快速聚焦)" id="searchInput">
+                <button class="search-btn" onclick="performSearch()"></button>
+                <div class="search-results" id="searchResults"></div>
+            </div>
+        </div>
+
+        <div class="content-wrapper">
+
+        <!-- 前端面试题区域 -->
+        <section id="frontendQASection" style="display: none;">
+            <h2 class="category-title">⚛️ 前端面试题</h2>
+            <div class="nav-grid" id="frontendQANav"></div>
+        </section>
+
+        <!-- 后端面试题区域 -->
+        <section id="backendQASection" style="display: none;">
+            <h2 class="category-title">🖥️ 后端面试题</h2>
+            <div class="nav-grid" id="backendQANav"></div>
+        </section>
+
+        <!-- Python面试题区域 -->
+        <section id="pythonQASection" style="display: none;">
+            <h2 class="category-title">🐍 Python面试题</h2>
+            <div class="nav-grid" id="pythonQANav"></div>
+        </section>
+
+        <!-- Python严酷面试题区域 -->
+        <section id="interviewSection" style="display: none;">
+            <h2 class="category-title">🎯 Python严酷面试题 (Top5大厂)</h2>
+            <div class="nav-grid" id="interviewNav"></div>
+        </section>
+
+        <footer>
+            <p>快捷导航 | 让你的上网更高效</p>
+        </footer>
+        </div>
+    </div>
+
+    <!-- Markdown预览模态框 -->
+    <div id="mdPreviewModal" class="md-preview-modal">
+        <div class="md-preview-content">
+            <div class="md-preview-header">
+                <div class="md-preview-title" id="mdPreviewTitle">文档预览</div>
+                <button class="md-preview-close" onclick="closeMdPreview()"></button>
+            </div>
+            <div class="md-preview-body" id="mdPreviewBody">
+                <div class="md-loading">加载中</div>
+            </div>
+            <div class="md-preview-footer">
+                <div class="md-file-info" id="mdFileInfo">—</div>
+                <button class="md-action-btn" onclick="closeMdPreview()">关闭</button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ====================================
+        // 👇 在这里直接添加你的自定义快捷方式 - 按类别分类
+        // ====================================
+
+        // 前端面试题
+        const FRONTEND_QA_SHORTCUTS = [
+        ];
+
+        // 后端面试题
+        const BACKEND_QA_SHORTCUTS = [
+            { name: 'Top5后端面试题-Part1(题1-3)', url: './后端面试题/Top5高难度后端面试题-完整版(含答案).md', icon: '📕' },
+            { name: 'Top5后端面试题-Part2(题4-5)', url: './后端面试题/Top5高难度后端面试题-完整版(含答案)-Part2.md', icon: '📗' },
+            { name: '后端面试题-数据库与SQL优化', url: './后端数据库、中间件相关/后端面试题-数据库与SQL优化.md', icon: '💾' },
+            { name: '后端面试题-缓存与消息队列', url: './后端数据库、中间件相关/后端面试题-缓存与消息队列.md', icon: '⚡' },
+            { name: '后端面试题-系统设计与架构', url: './后端数据库、中间件相关/后端面试题-系统设计与架构.md', icon: '🏗️' },
+            { name: '后端面试题-分布式系统与微服务', url: './后端数据库、中间件相关/后端面试题-分布式系统与微服务.md', icon: '🌐' },
+            { name: '后端面试题-网络与性能优化', url: './后端数据库、中间件相关/后端面试题-网络与性能优化.md', icon: '🚀' },
+        ];
+
+        // Python面试题
+        const PYTHON_QA_SHORTCUTS = [
+            { name: 'Top5大厂Python面试题集', url: './python面试题/Top5大厂Python面试题集.md', icon: '💼' },
+        ];
+
+        // Python严酷面试题
+        const INTERVIEW_SHORTCUTS = [
+        ];
+
+        // 保持向后兼容，合并所有快捷方式用于搜索
+        const MY_SHORTCUTS = [
+            ...FRONTEND_QA_SHORTCUTS,
+            ...BACKEND_QA_SHORTCUTS,
+            ...PYTHON_QA_SHORTCUTS,
+            ...INTERVIEW_SHORTCUTS
+        ];
+
+        // ====================================
+        // 👆 在上面添加你的自定义快捷方式
+        // ====================================
+
+        // 常用emoji列表
+        const emojis = ['🌟', '⭐', '💫', '✨', '🔥', '💡', '🎯', '🚀', '💻', '📱',
+                       '🎮', '🎵', '🎬', '📚', '📖', '✏️', '📝', '💼', '🏠', '🏢',
+                       '🛒', '🛍️', '💳', '📧', '✉️', '📮', '🔍', '🔎', '🌐', '🌍',
+                       '📊', '📈', '💰', '🎨', '🖼️', '📷', '📹', '🎤', '🎧', '📻',
+                       '☁️', '🌤️', '⚡', '🌈', '🎪', '🎭', '🎲', '🎰', '🏆', '🥇'];
+
+        // 本地存储的key
+        const STORAGE_KEY = 'customNavItems';
+
+        // 只使用代码中定义的快捷方式
+        let customNavItems = [...MY_SHORTCUTS];
+
+        // 创建流星
+        function createMeteor() {
+            const meteor = document.createElement('div');
+            meteor.className = 'meteor';
+            meteor.style.left = Math.random() * 100 + '%';
+            meteor.style.top = Math.random() * 50 + '%';
+            meteor.style.animationDuration = (Math.random() * 1 + 0.5) + 's';
+            document.body.appendChild(meteor);
+
+            setTimeout(() => {
+                meteor.remove();
+            }, 2000);
+        }
+
+        // 定期创建流星
+        setInterval(() => {
+            if (Math.random() > 0.7) {
+                createMeteor();
+            }
+        }, 2000);
+
+        // 创建粒子效果
+        function createParticles() {
+            const particlesContainer = document.getElementById('particles');
+            const particleCount = 80;
+
+            for (let i = 0; i < particleCount; i++) {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+                particle.style.left = Math.random() * 100 + '%';
+                particle.style.animationDelay = Math.random() * 20 + 's';
+                particle.style.animationDuration = (Math.random() * 15 + 15) + 's';
+                const size = Math.random() * 3 + 2;
+                particle.style.width = size + 'px';
+                particle.style.height = size + 'px';
+                particlesContainer.appendChild(particle);
+            }
+        }
+
+        // 渲染导航项的通用函数
+        function renderNavItems(items, containerId, sectionId) {
+            const container = document.getElementById(containerId);
+            const section = document.getElementById(sectionId);
+
+            if (items.length === 0) {
+                section.style.display = 'none';
+                return;
+            }
+
+            section.style.display = 'block';
+            container.innerHTML = '';
+
+            items.forEach((item, index) => {
+                const navItem = document.createElement('a');
+                navItem.href = item.url;
+                navItem.className = 'nav-item custom';
+                navItem.target = '_blank';
+
+                const isMarkdown = item.url.toLowerCase().endsWith('.md');
+
+                let buttons = '';
+                if (isMarkdown) {
+                    buttons += `<button class="preview-btn" onclick="previewMarkdown('${item.url.replace(/'/g, "\\'")}', '${item.name.replace(/'/g, "\\'")}'); event.preventDefault();" title="预览"></button>`;
+                }
+
+                navItem.innerHTML = `
+                    ${buttons}
+                    <span class="nav-icon">${item.icon}</span>
+                    <span class="nav-title">${item.name}</span>
+                `;
+                container.appendChild(navItem);
+            });
+        }
+
+        // 渲染所有类别的导航
+        function renderAllCategories() {
+            renderNavItems(FRONTEND_QA_SHORTCUTS, 'frontendQANav', 'frontendQASection');
+            renderNavItems(BACKEND_QA_SHORTCUTS, 'backendQANav', 'backendQASection');
+            renderNavItems(PYTHON_QA_SHORTCUTS, 'pythonQANav', 'pythonQASection');
+            renderNavItems(INTERVIEW_SHORTCUTS, 'interviewNav', 'interviewSection');
+        }
+
+        // 保持向后兼容的旧函数名
+        function renderCustomNav() {
+            renderAllCategories();
+        }
+
+        // 3D 卡片鼠标追踪效果 - 已禁用倾斜
+        function add3DEffect() {
+            // 不再添加鼠标追踪的倾斜效果
+            // 卡片的悬停效果由CSS处理
+        }
+
+        window.onclick = function(event) {
+            const mdModal = document.getElementById('mdPreviewModal');
+            if (event.target === mdModal) {
+                closeMdPreview();
+            }
+        }
+
+        async function previewMarkdown(url, name) {
+            const modal = document.getElementById('mdPreviewModal');
+            const titleEl = document.getElementById('mdPreviewTitle');
+            const bodyEl = document.getElementById('mdPreviewBody');
+            const infoEl = document.getElementById('mdFileInfo');
+
+            modal.style.display = 'block';
+            titleEl.textContent = name;
+            bodyEl.innerHTML = '<div class="md-loading">加载中</div>';
+            infoEl.textContent = '—';
+
+            try {
+                const response = await fetch(url);
+                if (!response.ok) {
+                    throw new Error('文件加载失败');
+                }
+
+                const markdown = await response.text();
+                const html = marked.parse(markdown);
+                bodyEl.innerHTML = `<div class="markdown-content">${html}</div>`;
+
+                const fileSize = new Blob([markdown]).size;
+                const fileSizeKB = (fileSize / 1024).toFixed(2);
+                infoEl.textContent = `文件大小: ${fileSizeKB} KB | 字符数: ${markdown.length}`;
+
+            } catch (error) {
+                bodyEl.innerHTML = `
+                    <div style="text-align: center; padding: 40px; color: #ff4757;">
+                        <div style="font-size: 3em; margin-bottom: 15px;">⚠️</div>
+                        <div style="font-size: 1.2em; font-weight: 600;">加载失败</div>
+                        <div style="margin-top: 10px; color: rgba(255,255,255,0.6);">${error.message}</div>
+                        <div style="margin-top: 15px; font-size: 0.9em; color: rgba(255,255,255,0.5);">
+                            提示:本地文件需要通过HTTP服务器访问才能预览
+                        </div>
+                    </div>
+                `;
+                infoEl.textContent = '加载失败';
+            }
+        }
+
+        function closeMdPreview() {
+            document.getElementById('mdPreviewModal').style.display = 'none';
+        }
+
+        function performSearch() {
+            const searchInput = document.getElementById('searchInput');
+            const query = searchInput.value.trim();
+
+            if (query) {
+                searchInput.style.transform = 'scale(0.95)';
+                setTimeout(() => {
+                    searchInput.style.transform = 'scale(1)';
+                }, 100);
+
+                if (query.startsWith('http://') || query.startsWith('https://') || query.includes('.')) {
+                    const url = query.startsWith('http') ? query : 'https://' + query;
+                    window.open(url, '_blank');
+                } else {
+                    window.open('https://www.baidu.com/s?wd=' + encodeURIComponent(query), '_blank');
+                }
+                searchInput.value = '';
+                hideSearchResults();
+            }
+        }
+
+        function getAllShortcuts() {
+            const allShortcuts = [];
+
+            // 添加前端面试题
+            FRONTEND_QA_SHORTCUTS.forEach(item => {
+                allShortcuts.push({ ...item, category: '前端面试题' });
+            });
+
+            // 添加后端面试题
+            BACKEND_QA_SHORTCUTS.forEach(item => {
+                allShortcuts.push({ ...item, category: '后端面试题' });
+            });
+
+            // 添加Python面试题
+            PYTHON_QA_SHORTCUTS.forEach(item => {
+                allShortcuts.push({ ...item, category: 'Python面试题' });
+            });
+
+            // 添加Python严酷面试题
+            INTERVIEW_SHORTCUTS.forEach(item => {
+                allShortcuts.push({ ...item, category: 'Python严酷面试题' });
+            });
+
+            return allShortcuts;
+        }
+
+        function searchLocalShortcuts(query) {
+            if (!query || query.trim() === '') {
+                return [];
+            }
+
+            const searchTerm = query.toLowerCase();
+            const allShortcuts = getAllShortcuts();
+
+            return allShortcuts.filter(item => {
+                return item.name.toLowerCase().includes(searchTerm) ||
+                       item.url.toLowerCase().includes(searchTerm);
+            });
+        }
+
+        function showSearchResults(results) {
+            const resultsContainer = document.getElementById('searchResults');
+
+            if (results.length === 0) {
+                resultsContainer.innerHTML = '<div class="no-results">未找到匹配的快捷方式</div>';
+                resultsContainer.classList.add('show');
+                return;
+            }
+
+            resultsContainer.innerHTML = results.map(item => `
+                <div class="search-result-item" onclick="openShortcut('${item.url.replace(/'/g, "\\'")}', '${item.name.replace(/'/g, "\\'")}')">
+                    <span class="search-result-icon">${item.icon}</span>
+                    <div class="search-result-info">
+                        <div class="search-result-title">${item.name}</div>
+                        <div class="search-result-url">${item.url}</div>
+                    </div>
+                    <span class="search-result-badge">${item.category}</span>
+                </div>
+            `).join('');
+
+            resultsContainer.classList.add('show');
+        }
+
+        function hideSearchResults() {
+            const resultsContainer = document.getElementById('searchResults');
+            resultsContainer.classList.remove('show');
+        }
+
+        function openShortcut(url, name) {
+            // 如果是Markdown文件，直接预览
+            if (url.toLowerCase().endsWith('.md')) {
+                previewMarkdown(url, name);
+            } else {
+                window.open(url, '_blank');
+            }
+            document.getElementById('searchInput').value = '';
+            hideSearchResults();
+        }
+
+        document.getElementById('searchInput').addEventListener('input', function(e) {
+            const query = e.target.value.trim();
+
+            if (query === '') {
+                hideSearchResults();
+                return;
+            }
+
+            if (query.startsWith('http://') || query.startsWith('https://') ||
+                (query.includes('.') && !query.includes(' '))) {
+                hideSearchResults();
+                return;
+            }
+
+            const results = searchLocalShortcuts(query);
+            showSearchResults(results);
+        });
+
+        document.getElementById('searchInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter') {
+                const resultsContainer = document.getElementById('searchResults');
+
+                const resultItems = resultsContainer.querySelectorAll('.search-result-item');
+                if (resultItems.length === 1 && resultsContainer.classList.contains('show')) {
+                    resultItems[0].click();
+                } else {
+                    performSearch();
+                }
+            }
+        });
+
+        document.addEventListener('keydown', function(e) {
+            if (e.key === '/' && !e.ctrlKey && !e.metaKey && document.activeElement.tagName !== 'INPUT') {
+                e.preventDefault();
+                const searchInput = document.getElementById('searchInput');
+                searchInput.focus();
+                searchInput.select();
+            }
+
+            if (e.key === 'Escape') {
+                hideSearchResults();
+                document.getElementById('searchInput').blur();
+            }
+        });
+
+        document.addEventListener('click', function(e) {
+            const searchBox = document.querySelector('.search-box');
+            if (!searchBox.contains(e.target)) {
+                hideSearchResults();
+            }
+        });
+
+        function updateTime() {
+            const now = new Date();
+            const timeString = now.toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
+            const dateString = now.toLocaleDateString('zh-CN', { month: 'long', day: 'numeric', weekday: 'long' });
+
+            if (!document.querySelector('.time-display')) {
+                const timeDisplay = document.createElement('div');
+                timeDisplay.className = 'time-display';
+                timeDisplay.style.cssText = 'text-align: center; color: white; margin-bottom: 20px; font-size: 1.1em; animation: fadeIn 1s ease; text-shadow: 0 0 15px rgba(102, 126, 234, 0.6);';
+                timeDisplay.innerHTML = `<div style="font-size: 2em; font-weight: bold; margin-bottom: 5px;">${timeString}</div><div>${dateString}</div>`;
+                document.querySelector('header').appendChild(timeDisplay);
+            } else {
+                const timeDisplay = document.querySelector('.time-display');
+                timeDisplay.innerHTML = `<div style="font-size: 2em; font-weight: bold; margin-bottom: 5px;">${timeString}</div><div>${dateString}</div>`;
+            }
+        }
+
+        // 页面加载时初始化
+        window.addEventListener('load', function() {
+            // 隐藏加载动画
+            setTimeout(() => {
+                document.getElementById('pageLoader').classList.add('hidden');
+            }, 1000);
+
+            createParticles();
+            renderCustomNav();
+            updateTime();
+            setInterval(updateTime, 1000);
+
+            // 添加 3D 效果
+            setTimeout(() => {
+                add3DEffect();
+            }, 100);
+        });
+    </script>
+</body>
+</html>
