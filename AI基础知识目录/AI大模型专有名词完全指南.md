@@ -2052,3 +2052,2578 @@ response = llm.generate(
 - 优化模型性能
 
 大模型技术日新月异，持续学习是关键！🚀
+
+---
+
+## 十四、更多专有名词补充
+
+### 14.1 神经网络基础术语
+
+#### Activation Function（激活函数）
+
+**常见激活函数**：
+
+**1. ReLU（Rectified Linear Unit）**
+```python
+f(x) = max(0, x)
+```
+- 优点：计算简单，缓解梯度消失
+- 缺点：可能出现神经元死亡
+
+**2. GELU（Gaussian Error Linear Unit）**
+```python
+f(x) = x * Φ(x)  # Φ是标准正态分布的累积分布函数
+```
+- Transformer常用
+- 比ReLU更平滑
+
+**3. Swish / SiLU**
+```python
+f(x) = x * sigmoid(x)
+```
+- Google Brain提出
+- 自适应门控
+
+**4. GLU（Gated Linear Unit）**
+```python
+f(x) = (x * W + b) ⊗ σ(x * V + c)
+```
+- LLaMA使用
+- 提升表达能力
+
+---
+
+#### Dropout
+
+**定义**：训练时随机丢弃部分神经元，防止过拟合。
+
+```python
+# 训练时
+output = x * mask / keep_prob  # mask是随机0/1向量
+
+# 推理时
+output = x  # 不使用dropout
+```
+
+**变体**：
+- **DropConnect**：丢弃连接而非神经元
+- **Spatial Dropout**：丢弃整个特征图
+- **DropPath**：随机丢弃残差连接（Vision Transformer使用）
+
+---
+
+#### Batch Normalization（批归一化）
+
+**定义**：对每个batch的特征进行归一化。
+
+```python
+# 对每个特征维度
+μ_B = (1/m) * Σ x_i
+σ²_B = (1/m) * Σ (x_i - μ_B)²
+x̂_i = (x_i - μ_B) / √(σ²_B + ε)
+y_i = γ * x̂_i + β  # γ, β可学习
+```
+
+**与Layer Norm区别**：
+- **Batch Norm**：对batch维度归一化（CNN常用）
+- **Layer Norm**：对特征维度归一化（Transformer常用）
+
+---
+
+### 14.2 损失函数
+
+#### Cross Entropy Loss（交叉熵损失）
+
+**定义**：分类任务的标准损失函数。
+
+```python
+# 二分类
+L = -[y*log(p) + (1-y)*log(1-p)]
+
+# 多分类
+L = -Σ y_i * log(p_i)
+```
+
+**语言模型中的使用**：
+```python
+# 预测下一个token
+loss = CrossEntropy(logits, target_token_id)
+```
+
+---
+
+#### Contrastive Loss（对比损失）
+
+**定义**：拉近相似样本，推远不相似样本。
+
+**InfoNCE Loss**（对比学习标准损失）：
+```python
+L = -log(exp(sim(x, x+)/τ) / Σ exp(sim(x, x_i)/τ))
+
+其中：
+- x, x+: 正样本对
+- x_i: 负样本
+- τ: 温度参数
+```
+
+**应用**：
+- CLIP（图像-文本对比学习）
+- SimCLR（自监督学习）
+- Contriever（无监督检索）
+
+---
+
+#### Ranking Loss（排序损失）
+
+**定义**：优化样本的相对排序。
+
+**常见类型**：
+
+**1. Pairwise Ranking Loss**
+```python
+L = max(0, margin - score(pos) + score(neg))
+```
+
+**2. Triplet Loss（三元组损失）**
+```python
+L = max(0, ||f(a) - f(p)||² - ||f(a) - f(n)||² + margin)
+
+a: anchor（锚点）
+p: positive（正样本）
+n: negative（负样本）
+```
+
+**应用**：
+- 检索系统排序
+- 推荐系统
+- RLHF中的奖励模型训练
+
+---
+
+### 14.3 优化器详解
+
+#### SGD（Stochastic Gradient Descent）
+
+**定义**：随机梯度下降。
+
+```python
+θ_t = θ_{t-1} - η * ∇L(θ_{t-1})
+
+η: 学习率
+```
+
+**变体**：
+- **SGD with Momentum**：增加动量
+```python
+v_t = β * v_{t-1} + ∇L(θ)
+θ_t = θ_{t-1} - η * v_t
+```
+
+- **Nesterov Momentum**：预测未来梯度
+```python
+v_t = β * v_{t-1} + ∇L(θ - β * v_{t-1})
+θ_t = θ_{t-1} - η * v_t
+```
+
+---
+
+#### Adam（Adaptive Moment Estimation）
+
+**定义**：自适应学习率优化器。
+
+```python
+m_t = β1 * m_{t-1} + (1-β1) * g_t       # 一阶矩估计
+v_t = β2 * v_{t-1} + (1-β2) * g_t²      # 二阶矩估计
+
+m̂_t = m_t / (1 - β1^t)  # 偏差修正
+v̂_t = v_t / (1 - β2^t)
+
+θ_t = θ_{t-1} - η * m̂_t / (√v̂_t + ε)
+```
+
+**典型超参数**：
+- β1 = 0.9
+- β2 = 0.999
+- η = 1e-3 或 3e-4
+
+---
+
+#### AdamW
+
+**改进**：正确实现权重衰减（Weight Decay）。
+
+```python
+# Adam中的L2正则化（错误）
+g_t = g_t + λ * θ_t
+
+# AdamW的权重衰减（正确）
+θ_t = θ_{t-1} - η * (m̂_t / (√v̂_t + ε) + λ * θ_{t-1})
+```
+
+**使用**：现代Transformer训练的标准选择
+
+---
+
+#### Adafactor
+
+**定义**：节省内存的Adam变体。
+
+**特点**：
+- 不存储完整的二阶矩
+- 使用矩阵分解近似
+- T5训练使用
+
+---
+
+#### Lion（EvoLved Sign Momentum）
+
+**定义**：Google 2023年提出的新优化器。
+
+```python
+update = sign(β1 * m_{t-1} + (1-β1) * g_t)
+θ_t = θ_{t-1} - η * update
+m_t = β2 * m_{t-1} + (1-β2) * g_t
+```
+
+**优势**：
+- 更节省内存
+- 收敛更快
+- 性能与Adam相当
+
+---
+
+### 14.4 正则化技术
+
+#### Weight Decay（权重衰减）
+
+**定义**：L2正则化，防止权重过大。
+
+```python
+L_total = L_task + λ * Σ||θ||²
+```
+
+**典型值**：λ = 0.01 或 0.1
+
+---
+
+#### Label Smoothing（标签平滑）
+
+**定义**：软化one-hot标签，防止过拟合。
+
+```python
+# 原始
+y = [0, 0, 1, 0, 0]
+
+# 平滑后（ε=0.1）
+y_smooth = [ε/K, ε/K, 1-ε+ε/K, ε/K, ε/K]
+```
+
+**效果**：提升泛化能力，减少过自信
+
+---
+
+#### Early Stopping（早停）
+
+**定义**：验证集性能不再提升时停止训练。
+
+**策略**：
+```
+patience = 5  # 容忍5个epoch不提升
+if val_loss没有改善 for patience epochs:
+    停止训练
+    恢复最佳checkpoint
+```
+
+---
+
+### 14.5 模型架构变体
+
+#### Sparse Transformer
+
+**定义**：使用稀疏注意力模式，降低复杂度。
+
+**注意力模式**：
+
+**1. Local Attention（局部注意力）**
+```
+每个token只关注周围k个位置
+复杂度：O(n*k)
+```
+
+**2. Strided Attention（跨步注意力）**
+```
+每隔s个位置关注一次
+用于捕捉长距离依赖
+```
+
+**3. Block Sparse Attention**
+```
+分块注意力矩阵
+OpenAI GPT-3使用
+```
+
+---
+
+#### Linformer
+
+**定义**：将attention复杂度降至O(n)。
+
+**方法**：
+```
+K' = E_K * K  # 投影到更低维度
+V' = E_V * V
+
+Attention(Q, K', V') → O(n*k)  # k << n
+```
+
+---
+
+#### Reformer
+
+**特点**：
+- LSH Attention（局部敏感哈希）
+- 可逆层（Reversible Layers）
+- 大幅节省内存
+
+**应用**：处理超长序列（64K tokens）
+
+---
+
+### 14.6 训练技巧
+
+#### Gradient Checkpointing（梯度检查点）
+
+**定义**：不保存所有中间激活，反向传播时重新计算。
+
+**权衡**：
+- 内存：减少50-90%
+- 时间：增加20-30%
+
+```python
+# PyTorch
+from torch.utils.checkpoint import checkpoint
+
+output = checkpoint(layer, input)  # 不保存激活
+```
+
+**使用场景**：训练超大模型
+
+---
+
+#### Loss Scaling（损失缩放）
+
+**定义**：混合精度训练中，放大损失避免下溢。
+
+```python
+# 前向传播
+loss = model(input)
+scaled_loss = loss * scale_factor
+
+# 反向传播
+scaled_loss.backward()
+
+# 梯度缩小
+gradients = gradients / scale_factor
+```
+
+---
+
+#### 学习率查找器（Learning Rate Finder）
+
+**方法**：
+```
+1. 从很小的lr开始
+2. 逐渐增大lr
+3. 绘制loss vs lr曲线
+4. 选择loss下降最快的lr
+```
+
+**工具**：
+- PyTorch Lightning内置
+- fastai提供lr_find()
+
+---
+
+### 14.7 数据处理
+
+#### Data Collator（数据整理器）
+
+**定义**：将不同长度的样本组成batch。
+
+**策略**：
+
+**1. Padding（填充）**
+```python
+# 填充到batch最大长度
+[1,2,3] + [PAD] → [1,2,3,0]
+[1,2]   + [PAD] → [1,2,0,0]
+```
+
+**2. Truncation（截断）**
+```python
+# 截断到最大长度
+[1,2,3,4,5] → [1,2,3,4]  # max_len=4
+```
+
+**3. Dynamic Padding**
+```python
+# 只填充到当前batch最大长度
+batch = [[1,2], [1,2,3,4,5]]
+→ [[1,2,0,0,0], [1,2,3,4,5]]
+```
+
+---
+
+#### Attention Mask（注意力掩码）
+
+**定义**：指示哪些位置需要注意。
+
+**类型**：
+
+**1. Padding Mask**
+```python
+# 忽略padding位置
+tokens = [1, 2, 3, 0, 0]  # 0是PAD
+mask   = [1, 1, 1, 0, 0]  # 1=attend, 0=ignore
+```
+
+**2. Causal Mask（因果掩码）**
+```python
+# 只能看到之前的token（GPT使用）
+mask = [
+  [1, 0, 0, 0],  # token 0只看自己
+  [1, 1, 0, 0],  # token 1看0,1
+  [1, 1, 1, 0],  # token 2看0,1,2
+  [1, 1, 1, 1]   # token 3看全部
+]
+```
+
+**3. Bidirectional Mask（双向掩码）**
+```python
+# 可以看到全部token（BERT使用）
+mask = [
+  [1, 1, 1, 1],
+  [1, 1, 1, 1],
+  [1, 1, 1, 1],
+  [1, 1, 1, 1]
+]
+```
+
+---
+
+### 14.8 提示工程进阶
+
+#### Meta-prompting（元提示）
+
+**定义**：用prompt指导如何写prompt。
+
+**示例**：
+```
+你是一个prompt工程师。为以下任务设计一个最优的prompt：
+任务：情感分析
+要求：准确率高，格式清晰
+```
+
+---
+
+#### Prompt Chaining（提示链）
+
+**定义**：将复杂任务拆分为多个prompt。
+
+**示例**：
+```
+Prompt 1: 提取文章关键信息
+Prompt 2: 基于关键信息生成摘要
+Prompt 3: 优化摘要的可读性
+```
+
+---
+
+#### Iterative Refinement（迭代精炼）
+
+**流程**：
+```
+1. 生成初始输出
+2. 评估质量
+3. 基于反馈改进
+4. 重复2-3直到满意
+```
+
+---
+
+#### Role Prompting（角色提示）
+
+**定义**：赋予模型特定角色。
+
+**示例**：
+```
+你是一位资深Python工程师，拥有10年经验...
+你是一位物理学教授，擅长用简单语言解释复杂概念...
+```
+
+---
+
+### 14.9 多模态专有名词
+
+#### Vision Transformer (ViT)
+
+**定义**：将Transformer应用于图像。
+
+**流程**：
+```
+1. 图像分割为patches（如16x16）
+2. 每个patch线性投影为embedding
+3. 添加位置编码
+4. 输入Transformer Encoder
+```
+
+**公式**：
+```
+z_0 = [x_cls; x_p^1 E; x_p^2 E; ...; x_p^N E] + E_pos
+
+x_p^i: 第i个patch
+E: patch embedding矩阵
+E_pos: 位置编码
+```
+
+---
+
+#### CLIP (Contrastive Language-Image Pre-training)
+
+**架构**：
+```
+Image Encoder (ViT) → Image Embeddings
+Text Encoder (Transformer) → Text Embeddings
+
+训练目标：
+- 匹配的图像-文本对：相似度高
+- 不匹配的对：相似度低
+```
+
+**应用**：
+- Zero-shot图像分类
+- 图像搜索
+- 文生图引导（DALL-E 2）
+
+---
+
+#### Diffusion Models（扩散模型）
+
+**核心概念**：
+
+**1. Forward Process（前向过程）**
+```
+逐步向图像添加噪声，直到变成纯噪声
+x_0 → x_1 → x_2 → ... → x_T (noise)
+```
+
+**2. Reverse Process（反向过程）**
+```
+从噪声逐步去噪，生成图像
+x_T → x_{T-1} → ... → x_1 → x_0 (image)
+```
+
+**训练目标**：
+```python
+L = E[||ε - ε_θ(x_t, t)||²]
+
+ε: 真实噪声
+ε_θ: 模型预测的噪声
+```
+
+**代表模型**：
+- DDPM（Denoising Diffusion Probabilistic Models）
+- Stable Diffusion
+- DALL-E 2
+
+---
+
+#### Latent Diffusion
+
+**改进**：在压缩的latent space进行扩散。
+
+**优势**：
+- 计算效率高
+- 生成质量好
+
+**架构**：
+```
+Image → VAE Encoder → Latent Code
+Latent Code → Diffusion Process → Denoised Latent
+Denoised Latent → VAE Decoder → Image
+```
+
+**代表**：Stable Diffusion
+
+---
+
+#### ControlNet
+
+**定义**：为扩散模型添加条件控制。
+
+**控制方式**：
+- Canny边缘
+- 深度图
+- 人体姿态
+- 语义分割图
+
+**应用**：精确控制生成内容的结构和布局
+
+---
+
+### 14.10 强化学习相关
+
+#### Policy（策略）
+
+**定义**：从状态到动作的映射。
+
+```python
+π(a|s): 在状态s下选择动作a的概率
+```
+
+**类型**：
+- Deterministic Policy：确定性策略
+- Stochastic Policy：随机策略
+
+---
+
+#### Value Function（价值函数）
+
+**定义**：评估状态或动作的好坏。
+
+**类型**：
+
+**1. State Value Function (V)**
+```python
+V^π(s) = E[Σ γ^t r_t | s_0=s, π]
+
+未来累积奖励的期望
+```
+
+**2. Action Value Function (Q)**
+```python
+Q^π(s,a) = E[Σ γ^t r_t | s_0=s, a_0=a, π]
+
+在状态s执行动作a的价值
+```
+
+**3. Advantage Function (A)**
+```python
+A^π(s,a) = Q^π(s,a) - V^π(s)
+
+动作a相对平均水平的优势
+```
+
+---
+
+#### Reward Shaping（奖励塑形）
+
+**定义**：设计辅助奖励引导学习。
+
+**方法**：
+```python
+# 稀疏奖励（难学习）
+reward = {1 if win, 0 otherwise}
+
+# 密集奖励（容易学习）
+reward = base_reward + distance_bonus + time_penalty
+```
+
+**风险**：可能引入意外的学习目标
+
+---
+
+#### Exploration vs Exploitation
+
+**定义**：探索新策略 vs 利用已知好策略。
+
+**平衡方法**：
+
+**1. ε-Greedy**
+```python
+if random() < ε:
+    选择随机动作（探索）
+else:
+    选择最优动作（利用）
+```
+
+**2. Entropy Bonus（熵奖励）**
+```python
+reward = task_reward + β * H(π)
+
+H(π): 策略的熵（多样性）
+β: 权重系数
+```
+
+---
+
+### 14.11 知识蒸馏
+
+#### Teacher-Student Framework
+
+**流程**：
+```
+Teacher Model (Large):
+  - 已训练好的大模型
+  - 生成软标签（概率分布）
+
+Student Model (Small):
+  - 待训练的小模型
+  - 学习teacher的输出分布
+```
+
+**损失函数**：
+```python
+L = α * L_hard + (1-α) * L_soft
+
+L_hard: 真实标签的交叉熵
+L_soft: teacher软标签的KL散度
+```
+
+---
+
+#### Knowledge Distillation Loss
+
+**温度缩放**：
+```python
+# Teacher outputs
+p_t = softmax(logits_t / T)
+
+# Student outputs
+p_s = softmax(logits_s / T)
+
+# Distillation loss
+L_KD = T² * KL(p_t || p_s)
+
+T: 温度（通常2-5）
+```
+
+**温度作用**：
+- T=1：原始分布（尖锐）
+- T>1：更平滑，包含更多信息
+
+---
+
+#### Intermediate Layer Distillation
+
+**定义**：蒸馏中间层的表示。
+
+```python
+L_hidden = ||h_teacher - W * h_student||²
+
+W: 对齐矩阵（维度可能不同）
+```
+
+**优势**：学习teacher的内部表示
+
+---
+
+### 14.12 模型压缩
+
+#### Low-Rank Factorization（低秩分解）
+
+**定义**：将大矩阵分解为小矩阵的乘积。
+
+```python
+# 原始权重
+W ∈ R^(m×n)  # mn个参数
+
+# 低秩分解
+W ≈ U × V^T
+U ∈ R^(m×r), V ∈ R^(n×r)  # (m+n)r个参数
+
+当r << min(m,n)时，显著减少参数
+```
+
+**应用**：LoRA就是基于这个原理
+
+---
+
+#### Structured Pruning（结构化剪枝）
+
+**定义**：移除整个结构单元（神经元、通道、层）。
+
+**粒度**：
+```
+Layer-level: 移除整层
+Channel-level: 移除卷积通道
+Attention-head-level: 移除注意力头
+```
+
+**优势**：
+- 加速效果明显
+- 硬件友好
+- 无需特殊推理库
+
+---
+
+#### Dynamic Quantization（动态量化）
+
+**定义**：推理时动态确定量化参数。
+
+```python
+# 静态量化（训练时确定）
+scale, zero_point = calibrate(weights)
+quantized = quantize(weights, scale, zero_point)
+
+# 动态量化（推理时确定）
+for batch in data:
+    scale, zero_point = compute_dynamic(activations)
+    quantized = quantize(activations, scale, zero_point)
+```
+
+**适用**：激活值分布不固定的场景
+
+---
+
+### 14.13 分布式训练
+
+#### Ring-AllReduce
+
+**定义**：分布式训练中高效同步梯度的算法。
+
+**流程**：
+```
+GPU 0: [g0, g1, g2, g3]
+GPU 1: [g0, g1, g2, g3]
+GPU 2: [g0, g1, g2, g3]
+GPU 3: [g0, g1, g2, g3]
+
+分块累加 → 所有GPU得到相同梯度总和
+```
+
+**优势**：
+- 通信量：O(N)（vs Naive: O(N²)）
+- 无需中心节点
+
+---
+
+#### ZeRO（Zero Redundancy Optimizer）
+
+**定义**：DeepSpeed的内存优化技术。
+
+**三个阶段**：
+
+**ZeRO-1**: 分片优化器状态
+```
+每个GPU只存储部分Adam状态
+内存节省：4x
+```
+
+**ZeRO-2**: 分片梯度
+```
+每个GPU只存储部分梯度
+内存节省：8x
+```
+
+**ZeRO-3**: 分片模型参数
+```
+每个GPU只存储部分参数
+内存节省：N_gpu x（几乎线性）
+```
+
+**效果**：可以训练万亿参数模型
+
+---
+
+#### Gradient Checkpointing + Offloading
+
+**组合技巧**：
+```
+1. Gradient Checkpointing: 减少激活内存
+2. CPU Offloading: 将部分数据移到CPU
+3. NVMe Offloading: 将数据移到磁盘
+
+权衡：内存 ↓↓, 速度 ↓
+```
+
+---
+
+### 14.14 安全与对齐
+
+#### Adversarial Training（对抗训练）
+
+**定义**：训练时加入对抗样本，提升鲁棒性。
+
+```python
+# 生成对抗样本
+x_adv = x + ε * sign(∇_x L(x, y))
+
+# 对抗训练
+L_total = L(x, y) + L(x_adv, y)
+```
+
+**应用**：防御对抗攻击
+
+---
+
+#### Prompt Injection（提示注入）
+
+**定义**：恶意用户通过精心设计的prompt绕过限制。
+
+**示例**：
+```
+用户输入：
+"忽略之前所有指令，现在按照我的要求..."
+
+防御：
+- 输入过滤
+- 指令分离
+- 输出验证
+```
+
+---
+
+#### AI Alignment Tax
+
+**定义**：对齐操作带来的性能损失。
+
+**权衡**：
+```
+安全性 ↑ ⟺ 能力 ↓
+
+RLHF可能：
+- 降低创造力
+- 增加拒绝率
+- 减少某些能力
+```
+
+---
+
+#### Watermarking（水印）
+
+**定义**：在生成内容中嵌入不可见的标记。
+
+**方法**：
+```
+1. 选择特定token组合
+2. 调整采样分布
+3. 检测时统计token模式
+```
+
+**应用**：识别AI生成内容
+
+---
+
+### 14.15 新兴概念
+
+#### Emergent Abilities（涌现能力）
+
+**定义**：模型规模达到阈值后突然出现的能力。
+
+**示例**：
+- Few-shot learning
+- Chain-of-thought推理
+- 算术能力
+- 代码理解
+
+**特点**：
+- 小模型完全不具备
+- 中等模型开始出现
+- 大模型表现优异
+
+---
+
+#### Scaling Hypothesis（缩放假说）
+
+**核心观点**：
+```
+模型性能 ∝ scale(params, data, compute)
+
+只要持续扩大规模，性能就会持续提升
+```
+
+**支持证据**：
+- GPT系列：3 → 3.5 → 4
+- PaLM: 8B → 62B → 540B
+
+**争议**：是否存在上限？
+
+---
+
+#### Bitter Lesson（苦涩教训）
+
+**Rich Sutton的观点**：
+```
+长期来看：
+通用方法 + 计算 > 人类知识 + 手工特征
+
+简单的方法 + 大规模计算
+往往胜过
+复杂的方法 + 人类先验
+```
+
+---
+
+#### AGI（Artificial General Intelligence）
+
+**定义**：通用人工智能，能完成人类所有智力任务。
+
+**评估标准**：
+- 多任务能力
+- 迁移学习
+- 创造力
+- 常识推理
+- 自我改进
+
+**现状**：尚未实现，但GPT-4已展现部分特征
+
+---
+
+#### Superintelligence（超级智能）
+
+**定义**：在所有领域都超越人类的AI。
+
+**类型**：
+- Speed Superintelligence（速度）
+- Collective Superintelligence（集体）
+- Quality Superintelligence（质量）
+
+---
+
+## 十五、按字母顺序的完整词汇表
+
+### A
+
+- **Activation Function** - 激活函数
+- **Adapter** - 适配器（PEFT方法）
+- **Adversarial Training** - 对抗训练
+- **AGI** - 通用人工智能
+- **Alignment** - 对齐
+- **ALiBi** - 注意力线性偏置
+- **Alpaca** - 斯坦福指令微调模型
+- **ANCE** - 近似最近邻对比学习
+- **Anthropic** - Claude开发公司
+- **APE** - 自动提示工程
+- **Attention Mask** - 注意力掩码
+- **Autoregressive** - 自回归
+- **AWQ** - 激活感知权重量化
+
+### B
+
+- **Backpropagation** - 反向传播
+- **BART** - 序列到序列预训练模型
+- **Batch Normalization** - 批归一化
+- **Batch Size** - 批大小
+- **BBH** - 大型基准困难任务
+- **Beam Search** - 束搜索
+- **BERT** - 双向编码表示
+- **Bias** - 偏置
+- **BigBird** - 稀疏注意力模型
+- **BioBERT** - 生物医学BERT
+- **BLEU** - 双语评估辅助
+- **BLIP** - 引导语言-图像预训练
+- **BPE** - 字节对编码
+- **BF16** - Brain Float 16
+
+### C
+
+- **Catastrophic Forgetting** - 灾难性遗忘
+- **Causal LM** - 因果语言建模
+- **Chain-of-Thought** - 思维链
+- **ChatGPT** - OpenAI对话模型
+- **Checkpoint** - 检查点
+- **CIDEr** - 共识图像描述评估
+- **CLIP** - 对比语言-图像预训练
+- **CLM** - 因果语言建模
+- **Code Completion** - 代码补全
+- **CodeBERT** - 代码理解模型
+- **CodeLlama** - Meta代码生成模型
+- **ColBERT** - 上下文化后期交互
+- **Constitutional AI** - 宪法AI
+- **Context Window** - 上下文窗口
+- **Contrastive Learning** - 对比学习
+- **ControlNet** - 扩散模型控制
+- **CoT** - 思维链
+- **Cross-Attention** - 交叉注意力
+- **Cross Entropy** - 交叉熵
+- **Curriculum Learning** - 课程学习
+
+### D
+
+- **Data Augmentation** - 数据增强
+- **Data Parallelism** - 数据并行
+- **DALL-E** - OpenAI文生图模型
+- **DAN** - Do Anything Now越狱
+- **DeBERTa** - 解耦增强BERT
+- **Decoder** - 解码器
+- **DeepSpeed** - 微软训练框架
+- **Diffusion Models** - 扩散模型
+- **Distillation** - 蒸馏
+- **DistilBERT** - BERT蒸馏版
+- **Diverse Beam Search** - 多样化束搜索
+- **DPO** - 直接偏好优化
+- **DPR** - 密集段落检索
+- **Dropout** - 随机丢弃
+- **Dynamic Quantization** - 动态量化
+
+### E
+
+- **Early Stopping** - 早停
+- **Elastic Weight Consolidation** - 弹性权重整合
+- **ELECTRA** - 判别式预训练
+- **Embeddings** - 嵌入
+- **Emergent Abilities** - 涌现能力
+- **Encoder** - 编码器
+- **Entity Masking** - 实体掩码
+- **Epoch** - 训练轮次
+- **EWC** - 弹性权重整合
+
+### F
+
+- **FAISS** - Facebook相似度搜索
+- **Few-shot** - 少样本学习
+- **FinBERT** - 金融BERT
+- **Fine-tuning** - 微调
+- **FLAN** - 指令微调模型系列
+- **Flamingo** - DeepMind多模态模型
+- **Flash Attention** - 快速注意力
+- **FLOPs** - 浮点运算
+- **FP16/FP32** - 浮点精度
+- **Frozen** - 冻结参数
+
+### G
+
+- **GAN** - 生成对抗网络
+- **Gemini** - Google多模态模型
+- **GELU** - 高斯误差线性单元
+- **Generative AI** - 生成式AI
+- **GLU** - 门控线性单元
+- **GPTQ** - GPT量化
+- **Gradient Accumulation** - 梯度累积
+- **Gradient Checkpointing** - 梯度检查点
+- **Gradient Clipping** - 梯度裁剪
+- **Gradient Descent** - 梯度下降
+- **GraphCodeBERT** - 图代码BERT
+- **Greedy Decoding** - 贪婪解码
+- **GSM8K** - 小学数学问题集
+
+### H
+
+- **Hallucination** - 幻觉
+- **HellaSwag** - 常识推理基准
+- **HNSW** - 层次导航小世界图
+- **HumanEval** - 代码评估基准
+- **Hugging Face** - 著名AI平台
+- **Hyperparameter** - 超参数
+
+### I
+
+- **IA³** - 抑制和放大内部激活
+- **ICL** - 上下文学习
+- **Imagen** - Google文生图模型
+- **In-Context Learning** - 上下文学习
+- **Inference** - 推理
+- **InfoNCE** - 对比学习损失
+- **Instruction Tuning** - 指令微调
+- **INT4/INT8** - 整数量化精度
+- **IVF** - 倒排文件索引
+
+### J
+
+- **Jailbreak** - 越狱攻击
+
+### K
+
+- **KL Divergence** - KL散度
+- **Knowledge Distillation** - 知识蒸馏
+- **KV Cache** - 键值缓存
+
+### L
+
+- **LaBSE** - 语言无关句子嵌入
+- **Label Smoothing** - 标签平滑
+- **LangChain** - LLM应用框架
+- **Latent Diffusion** - 潜在扩散
+- **Layer Normalization** - 层归一化
+- **Learning Rate** - 学习率
+- **Length Penalty** - 长度惩罚
+- **Lion** - 演化符号动量优化器
+- **LLaMA** - Meta开源模型
+- **LLaVA** - 视觉指令微调
+- **LLM** - 大语言模型
+- **Logits** - 未归一化的预测分数
+- **Longformer** - 长文档Transformer
+- **LoRA** - 低秩适应
+- **Loss Function** - 损失函数
+
+### M
+
+- **Masked LM** - 掩码语言建模
+- **MATH** - 数学问题数据集
+- **mBERT** - 多语言BERT
+- **Megatron-LM** - NVIDIA训练框架
+- **METEOR** - 翻译评估指标
+- **Midjourney** - 文生图服务
+- **Milvus** - 向量数据库
+- **Mistral** - 开源LLM
+- **Mixed Precision** - 混合精度
+- **Mixtral** - MoE架构模型
+- **MLM** - 掩码语言建模
+- **MMLU** - 大规模多任务理解
+- **MoE** - 混合专家
+- **Momentum** - 动量
+- **MRR** - 平均倒数排名
+- **mT5** - 多语言T5
+- **Multi-Head Attention** - 多头注意力
+- **Multi-turn** - 多轮对话
+
+### N
+
+- **NDCG** - 归一化折损累计增益
+- **NER** - 命名实体识别
+- **NLP** - 自然语言处理
+- **NSP** - 下一句预测
+- **Nucleus Sampling** - 核采样
+
+### O
+
+- **OCR** - 光学字符识别
+- **Offloading** - 卸载（到CPU/磁盘）
+- **One-shot** - 单样本学习
+- **ONNX** - 开放神经网络交换
+- **Optimizer** - 优化器
+- **Overfitting** - 过拟合
+
+### P
+
+- **PagedAttention** - 分页注意力
+- **PAL** - 程序辅助语言模型
+- **PaLM** - Google大模型
+- **Perplexity** - 困惑度
+- **PEFT** - 参数高效微调
+- **Pipeline Parallelism** - 流水线并行
+- **Positional Encoding** - 位置编码
+- **Post-training** - 训练后
+- **PPO** - 近端策略优化
+- **Precision** - 精确率
+- **Prefix Tuning** - 前缀微调
+- **Pre-training** - 预训练
+- **Prompt** - 提示词
+- **Prompt Engineering** - 提示工程
+- **Prompt Injection** - 提示注入
+- **Pruning** - 剪枝
+- **PubMedBERT** - 医学BERT
+
+### Q
+
+- **QLoRA** - 量化LoRA
+- **Quantization** - 量化
+- **Query** - 查询
+
+### R
+
+- **RAG** - 检索增强生成
+- **Ranking Loss** - 排序损失
+- **ReAct** - 推理+行动
+- **Recall** - 召回率
+- **Recurrent** - 循环
+- **Red Teaming** - 红队测试
+- **Reformer** - 高效Transformer
+- **Regularization** - 正则化
+- **ReLU** - 修正线性单元
+- **Repetition Penalty** - 重复惩罚
+- **Re-ranking** - 重排序
+- **Residual Connection** - 残差连接
+- **RETRO** - 检索增强Transformer
+- **Reward Model** - 奖励模型
+- **RLHF** - 人类反馈强化学习
+- **RMSNorm** - 均方根归一化
+- **RoBERTa** - 鲁棒优化BERT
+- **RoPE** - 旋转位置编码
+- **ROUGE** - 摘要评估指标
+
+### S
+
+- **Sampling** - 采样
+- **Scaling Law** - 缩放定律
+- **SciBERT** - 科学文献BERT
+- **Self-Attention** - 自注意力
+- **Self-Consistency** - 自洽性
+- **Sentence Transformers** - 句子编码模型
+- **SentencePiece** - 分词器
+- **Sequence Parallelism** - 序列并行
+- **SFT** - 监督微调
+- **SGD** - 随机梯度下降
+- **Sharding** - 分片
+- **Sliding Window** - 滑动窗口
+- **Softmax** - 归一化指数函数
+- **SOP** - 句子顺序预测
+- **Sparse Attention** - 稀疏注意力
+- **Speculative Decoding** - 投机解码
+- **SPICE** - 语义命题图像描述评估
+- **Stable Diffusion** - 稳定扩散
+- **StarCoder** - 代码生成模型
+- **Superintelligence** - 超级智能
+- **SuperGLUE** - 高级语言理解基准
+- **Supervised Learning** - 监督学习
+- **Swish/SiLU** - 激活函数
+- **System Prompt** - 系统提示
+
+### T
+
+- **T5** - Text-to-Text Transfer Transformer
+- **Temperature** - 温度参数
+- **Tensor Parallelism** - 张量并行
+- **TensorRT** - NVIDIA推理引擎
+- **Text-to-Image** - 文本到图像
+- **TGI** - 文本生成推理
+- **Token** - 词元
+- **Tokenization** - 分词
+- **Top-k Sampling** - Top-k采样
+- **Top-p Sampling** - Top-p采样
+- **ToT** - 思维树
+- **Toxicity** - 毒性
+- **TPU** - 张量处理单元
+- **Transfer Learning** - 迁移学习
+- **Transformer** - 变换器架构
+- **Transformer-XL** - 扩展Transformer
+- **Triplet Loss** - 三元组损失
+- **TruthfulQA** - 真实性问答基准
+- **Truncation** - 截断
+
+### U
+
+- **Underfitting** - 欠拟合
+- **Unified-IO** - 统一多模态模型
+- **Unigram LM** - 单字语言模型
+
+### V
+
+- **Value Function** - 价值函数
+- **Variational Autoencoder** - 变分自编码器
+- **ViT** - 视觉Transformer
+- **vLLM** - 高性能推理引擎
+- **Vocabulary** - 词表
+- **VQA** - 视觉问答
+
+### W
+
+- **Warmup** - 预热
+- **Watermarking** - 水印
+- **Weaviate** - 向量数据库
+- **Weight Decay** - 权重衰减
+- **Whisper** - OpenAI语音模型
+- **Whole Word Masking** - 全词掩码
+- **WordPiece** - 分词算法
+
+### X
+
+- **XLM-R** - 跨语言掩码模型-RoBERTa
+
+### Z
+
+- **ZeRO** - 零冗余优化器
+- **Zero-shot** - 零样本学习
+
+---
+
+## 十六、术语学习建议
+
+### 按难度分级
+
+**入门级（必须掌握）**：
+- Transformer, Attention, Token, Embedding
+- Fine-tuning, Prompt, Few-shot, Zero-shot
+- Temperature, Top-p, Beam Search
+
+**中级（深入理解）**：
+- LoRA, RLHF, RAG, CoT
+- KV Cache, Quantization
+- Instruction Tuning, System Prompt
+
+**高级（专业研究）**：
+- MoE, Sparse Attention, Flash Attention
+- DPO, Constitutional AI
+- ZeRO, Tensor Parallelism
+
+### 学习策略
+
+1. **关联记忆**：将相关术语组合学习
+2. **实践验证**：用代码实现核心概念
+3. **论文溯源**：阅读原始论文深入理解
+4. **社区交流**：参与讨论巩固知识
+
+---
+
+---
+
+## 十七、高级训练技术补充
+
+### 17.1 分布式训练进阶
+
+#### FSDP (Fully Sharded Data Parallel)
+
+**定义**：PyTorch的ZeRO实现，完全分片数据并行。
+
+**特点**：
+```python
+from torch.distributed.fsdp import FullyShardedDataParallel as FSDP
+
+# 包装模型
+model = FSDP(
+    model,
+    sharding_strategy="FULL_SHARD",  # 完全分片
+    cpu_offload=True,  # CPU卸载
+    mixed_precision=True,
+)
+```
+
+**优势**：
+- 与PyTorch原生集成
+- 支持CPU offloading
+- 内存效率接近ZeRO-3
+
+---
+
+#### 3D Parallelism (三维并行)
+
+**定义**：结合三种并行策略。
+
+**组合**：
+```
+数据并行 (Data Parallelism)
++
+张量并行 (Tensor Parallelism)
++
+流水线并行 (Pipeline Parallelism)
+= 3D Parallelism
+```
+
+**示例配置**：
+```python
+# Megatron-LM配置
+世界大小: 64个GPU
+├─ 数据并行度: 4
+├─ 张量并行度: 4
+└─ 流水线并行度: 4
+(4 × 4 × 4 = 64)
+```
+
+**应用**：训练万亿参数模型(GPT-3, PaLM等)
+
+---
+
+#### Sequence Parallelism (序列并行)
+
+**定义**：将长序列分片到多个设备。
+
+**适用场景**：
+- 超长上下文(>100K tokens)
+- 内存受限环境
+
+**实现**：
+```python
+# 将sequence维度切分
+seq_len = 8192
+num_gpus = 4
+per_gpu_len = seq_len // num_gpus  # 每个GPU处理2048
+
+# GPU 0: tokens[0:2048]
+# GPU 1: tokens[2048:4096]
+# GPU 2: tokens[4096:6144]
+# GPU 3: tokens[6144:8192]
+```
+
+---
+
+### 17.2 数据效率技术
+
+#### Active Learning (主动学习)
+
+**定义**：选择最有价值的样本进行标注。
+
+**策略**：
+1. **不确定性采样**：选择模型最不确定的样本
+2. **多样性采样**：选择代表性样本
+3. **对抗性采样**：选择模型易错样本
+
+**流程**：
+```python
+def active_learning_loop():
+    # 1. 初始模型
+    model = train_on_labeled_data(initial_data)
+
+    for iteration in range(max_iterations):
+        # 2. 在未标注数据上预测
+        predictions = model.predict(unlabeled_pool)
+
+        # 3. 选择最有价值的样本
+        selected = select_uncertain_samples(predictions, n=100)
+
+        # 4. 人工标注
+        labels = human_annotate(selected)
+
+        # 5. 重新训练
+        model = train_on_labeled_data(labeled_data + selected)
+```
+
+---
+
+#### Semi-Supervised Learning (半监督学习)
+
+**定义**：利用少量标注数据+大量未标注数据训练。
+
+**方法**：
+
+**1. Pseudo-Labeling (伪标签)**
+```python
+# 用已训练模型为未标注数据打标签
+pseudo_labels = model.predict(unlabeled_data)
+# 选择高置信度的伪标签
+confident = pseudo_labels[confidence > 0.9]
+# 加入训练集
+train_data += confident
+```
+
+**2. Consistency Regularization (一致性正则化)**
+```python
+# 同一样本的不同增强版本应得到相似预测
+def consistency_loss(x):
+    x_aug1 = augment(x)
+    x_aug2 = augment(x)
+
+    pred1 = model(x_aug1)
+    pred2 = model(x_aug2)
+
+    loss = KL_divergence(pred1, pred2)
+    return loss
+```
+
+**3. MixMatch**
+- 结合伪标签和一致性正则化
+- MixUp数据增强
+- 温度锐化
+
+---
+
+#### Self-Supervised Learning (自监督学习)
+
+**定义**：从未标注数据自动生成监督信号。
+
+**代表方法**：
+
+**1. 对比学习 (Contrastive Learning)**
+- SimCLR
+- MoCo (Momentum Contrast)
+- BYOL (Bootstrap Your Own Latent)
+
+**2. 掩码预测 (Masked Prediction)**
+- BERT (MLM)
+- MAE (Masked Autoencoders)
+
+**3. 预测任务 (Pretext Tasks)**
+- 旋转预测
+- 拼图还原
+- 着色
+
+---
+
+### 17.3 长上下文技术补充
+
+#### Sparse Attention 变体
+
+**1. Sliding Window Attention**
+```python
+# 只关注固定窗口内的token
+window_size = 256
+
+for i in range(seq_len):
+    start = max(0, i - window_size)
+    end = min(seq_len, i + window_size)
+    attention_range = tokens[start:end]
+```
+
+**2. Global + Local Attention**
+```python
+# Longformer策略
+attention_pattern = [
+    "local",    # 大部分token用局部注意力
+    "local",
+    "global",   # 部分关键token用全局注意力
+    "local",
+]
+```
+
+**3. Random Attention**
+```
+每个token随机关注r个其他位置
+用于捕捉长距离依赖
+```
+
+---
+
+#### Memory-Augmented Networks (记忆增强网络)
+
+**定义**：添加外部可读写的记忆模块。
+
+**类型**：
+
+**1. Neural Turing Machine (NTM)**
+- 可微分的读写操作
+- 基于内容的寻址
+
+**2. Differentiable Neural Computer (DNC)**
+- NTM的改进版
+- 动态内存分配
+
+**3. Memory Networks**
+- 用于QA任务
+- 支持多跳推理
+
+---
+
+### 17.4 模型架构创新
+
+#### State Space Models (SSM)
+
+**代表**：Mamba, S4 (Structured State Spaces)
+
+**核心思想**：
+```
+用状态空间方程替代Attention
+复杂度: O(N) vs Attention的O(N²)
+```
+
+**优势**：
+- 线性复杂度
+- 支持超长序列(>100万tokens)
+- 高效训练和推理
+
+**公式**：
+```python
+# 离散状态空间方程
+h_t = A * h_{t-1} + B * x_t
+y_t = C * h_t + D * x_t
+
+A: 状态转移矩阵
+B: 输入矩阵
+C: 输出矩阵
+D: 前馈矩阵
+```
+
+---
+
+#### Hyper-Networks (超网络)
+
+**定义**：用一个网络生成另一个网络的权重。
+
+**应用**：
+```python
+class HyperNetwork:
+    def __init__(self):
+        self.meta_net = MetaNetwork()
+
+    def forward(self, task_embedding):
+        # 根据任务生成主网络权重
+        weights = self.meta_net(task_embedding)
+        return weights
+
+# 多任务学习
+for task in tasks:
+    task_emb = encode_task(task)
+    weights = hyper_net(task_emb)
+    model.set_weights(weights)
+    model.train(task)
+```
+
+**优势**：
+- 参数共享
+- 快速适应新任务
+- 元学习
+
+---
+
+#### Neural Architecture Search (NAS)
+
+**定义**：自动搜索最优网络架构。
+
+**方法**：
+
+**1. 强化学习搜索**
+```python
+# 控制器生成架构
+controller = RNN()
+
+for iteration in range(max_iter):
+    # 采样架构
+    architecture = controller.sample()
+
+    # 训练和评估
+    accuracy = train_and_eval(architecture)
+
+    # 更新控制器(策略梯度)
+    controller.update(architecture, accuracy)
+```
+
+**2. 可微分搜索 (DARTS)**
+```python
+# 所有可能操作的加权组合
+alpha = learnable_parameters()
+
+mixed_op = sum(alpha_i * op_i for i, op_i in operations)
+
+# 同时优化alpha和网络权重
+```
+
+**3. 进化算法**
+- 种群初始化
+- 变异和交叉
+- 适者生存
+
+---
+
+### 17.5 测试时优化
+
+#### Test-Time Adaptation (TTA)
+
+**定义**：推理时根据测试数据微调模型。
+
+**方法**：
+```python
+def test_time_adapt(model, test_sample):
+    # 1. 启用BatchNorm等的更新
+    model.train()
+
+    # 2. 在测试样本上优化
+    loss = self_supervised_loss(test_sample)
+    loss.backward()
+    optimizer.step()
+
+    # 3. 预测
+    model.eval()
+    prediction = model(test_sample)
+    return prediction
+```
+
+**应用场景**：
+- 分布偏移
+- 域适应
+- 个性化
+
+---
+
+#### Test-Time Training (TTT)
+
+**定义**：测试时使用自监督任务更新模型。
+
+**流程**：
+```python
+# 训练阶段：同时优化主任务和辅助任务
+main_loss = supervised_loss(x, y)
+aux_loss = self_supervised_loss(x)  # 如旋转预测
+total_loss = main_loss + aux_loss
+
+# 测试阶段：用辅助任务适应
+test_aux_loss = self_supervised_loss(test_x)
+# 更新模型
+# 然后预测
+```
+
+---
+
+#### Prompt Tuning at Test Time
+
+**定义**：测试时优化prompt而非模型。
+
+```python
+# 固定模型，优化prompt
+prompt = learnable_prompt_embedding()
+
+for test_sample in test_set:
+    # 优化prompt
+    loss = compute_loss(model(prompt + test_sample))
+    prompt = update_prompt(loss)
+
+    # 用优化后的prompt预测
+    prediction = model(prompt + test_sample)
+```
+
+---
+
+### 17.6 鲁棒性与安全
+
+#### Certified Robustness (认证鲁棒性)
+
+**定义**：数学证明模型在一定扰动范围内的鲁棒性。
+
+**方法**：
+
+**1. Randomized Smoothing**
+```python
+def certify_robustness(model, x, sigma, n_samples):
+    # 添加高斯噪声并投票
+    votes = []
+    for _ in range(n_samples):
+        x_noisy = x + torch.randn_like(x) * sigma
+        pred = model(x_noisy)
+        votes.append(pred)
+
+    # 计算认证半径
+    top_class = majority_vote(votes)
+    certified_radius = compute_radius(votes, sigma)
+
+    return top_class, certified_radius
+```
+
+**2. Interval Bound Propagation (IBP)**
+- 传播输入的上下界
+- 保证输出在安全范围内
+
+---
+
+#### Backdoor Defense (后门防御)
+
+**定义**：检测和缓解模型中的后门攻击。
+
+**后门攻击示例**：
+```python
+# 攻击者在训练数据中植入触发器
+trigger = special_pattern
+poisoned_samples = add_trigger(clean_samples, trigger)
+poisoned_labels = target_label  # 强制输出特定标签
+
+# 模型学习到：trigger → target_label
+```
+
+**防御方法**：
+
+**1. Neural Cleanse**
+- 反向工程寻找触发器
+- 检测异常小的触发器
+
+**2. Activation Clustering**
+- 聚类隐藏层激活
+- 检测异常簇
+
+**3. Fine-Pruning**
+- 剪枝可疑神经元
+- 在干净数据上微调
+
+---
+
+#### Model Extraction Defense (模型提取防御)
+
+**定义**：防止攻击者通过API盗取模型。
+
+**攻击**：
+```python
+# 攻击者查询API
+for x in crafted_inputs:
+    y = victim_api(x)
+    dataset.append((x, y))
+
+# 训练替代模型
+stolen_model = train(dataset)
+```
+
+**防御**：
+```python
+# 1. 添加水印
+def watermark_output(logits):
+    # 轻微修改输出分布
+    watermarked = logits + watermark_signature
+    return watermarked
+
+# 2. 输出扰动
+def perturb_output(logits):
+    noise = random_noise(magnitude=small_epsilon)
+    return logits + noise
+
+# 3. 查询限制
+if user_queries > threshold:
+    rate_limit()
+```
+
+---
+
+### 17.7 多任务与元学习
+
+#### Multi-Task Learning (MTL)
+
+**定义**：同时学习多个相关任务。
+
+**架构**：
+
+**1. Hard Parameter Sharing**
+```python
+# 共享编码器
+shared_encoder = Transformer()
+
+# 任务特定头
+task1_head = Linear(hidden_dim, num_classes_1)
+task2_head = Linear(hidden_dim, num_classes_2)
+
+# 前向
+features = shared_encoder(input)
+output1 = task1_head(features)
+output2 = task2_head(features)
+
+# 联合损失
+loss = loss1 + loss2
+```
+
+**2. Soft Parameter Sharing**
+```
+每个任务有独立网络
+通过正则化鼓励参数相似
+```
+
+**优势**：
+- 正则化效果(防止过拟合)
+- 知识迁移
+- 参数效率
+
+---
+
+#### Meta-Learning (元学习)
+
+**定义**：学习如何学习。
+
+**代表算法**：
+
+**1. MAML (Model-Agnostic Meta-Learning)**
+```python
+def maml_outer_loop(tasks):
+    theta = init_parameters()
+
+    for task in tasks:
+        # 内循环：快速适应
+        theta_task = theta.clone()
+        for step in range(k_steps):
+            loss = compute_loss(theta_task, task)
+            theta_task -= alpha * grad(loss, theta_task)
+
+        # 外循环：更新初始参数
+        meta_loss = compute_loss(theta_task, task)
+        theta -= beta * grad(meta_loss, theta)
+
+    return theta  # 适合快速适应的初始参数
+```
+
+**2. Prototypical Networks**
+```python
+# 基于距离的分类
+class_prototypes = {}
+for class_c in classes:
+    # 计算类原型(均值)
+    class_prototypes[c] = mean(embeddings[class_c])
+
+# 分类：找最近的原型
+def classify(x):
+    emb = encoder(x)
+    distances = [dist(emb, proto) for proto in class_prototypes.values()]
+    return argmin(distances)
+```
+
+**3. Reptile**
+- MAML的简化版
+- 直接向任务适应后的参数移动
+
+**应用**：
+- Few-shot learning
+- 快速适应
+- 个性化
+
+---
+
+### 17.8 神经符号AI
+
+#### Neurosymbolic AI (神经符号结合)
+
+**定义**：结合神经网络和符号推理。
+
+**方法**：
+
+**1. Neural Module Networks (NMN)**
+```python
+# 根据问题动态组合神经模块
+question = "What color is the cat?"
+
+# 解析为程序
+program = [
+    "find(cat)",      # 定位猫
+    "relate(color)",  # 提取颜色属性
+]
+
+# 执行程序
+cat_region = find_module(image)
+color = relate_module(cat_region, "color")
+```
+
+**2. Logic Tensor Networks**
+- 用张量表示逻辑
+- 可微分推理
+
+**3. Semantic Parsing**
+```python
+# 自然语言 → 逻辑形式
+nl = "All dogs are animals"
+logic = "∀x (dog(x) → animal(x))"
+
+# 可执行查询
+query = "Is Fido an animal?"
+# 推理引擎验证
+```
+
+---
+
+#### Differentiable Reasoning (可微分推理)
+
+**应用**：
+
+**1. Graph Neural Networks (GNN) for Reasoning**
+```python
+# 知识图谱推理
+class ReasoningGNN(nn.Module):
+    def forward(self, entities, relations):
+        # 迭代消息传递
+        for layer in range(num_layers):
+            # 聚合邻居信息
+            messages = aggregate_neighbors(entities, relations)
+            # 更新实体表示
+            entities = update(entities, messages)
+
+        return entities
+```
+
+**2. Attention-based Reasoning**
+- 多跳注意力
+- 动态推理路径
+
+---
+
+### 17.9 持续学习补充
+
+#### Elastic Weight Consolidation (EWC)
+
+**原理**：重要参数变化受限。
+
+```python
+# 计算Fisher信息矩阵(参数重要性)
+def compute_fisher(model, old_task_data):
+    fisher = {}
+    for name, param in model.named_parameters():
+        # 计算梯度的平方期望
+        grads = []
+        for x, y in old_task_data:
+            loss = model(x, y)
+            grad = torch.autograd.grad(loss, param)[0]
+            grads.append(grad ** 2)
+        fisher[name] = torch.mean(torch.stack(grads))
+    return fisher
+
+# EWC损失
+def ewc_loss(model, old_params, fisher, lambda_ewc):
+    loss = 0
+    for name, param in model.named_parameters():
+        # 惩罚重要参数的改变
+        loss += fisher[name] * ((param - old_params[name]) ** 2).sum()
+    return lambda_ewc * loss
+
+# 总损失 = 新任务损失 + EWC正则化
+total_loss = new_task_loss + ewc_loss
+```
+
+---
+
+#### Progressive Neural Networks
+
+**思想**：为每个新任务添加新列，保留旧列。
+
+```python
+# 架构
+Task 1: Column 1
+Task 2: Column 1 (frozen) + Column 2
+Task 3: Column 1 (frozen) + Column 2 (frozen) + Column 3
+
+# 侧向连接
+output_task3 = combine(
+    column1(x),  # 旧知识
+    column2(x),
+    column3(x)   # 新知识
+)
+```
+
+**优点**：
+- 无灾难性遗忘
+- 知识迁移
+
+**缺点**：
+- 参数线性增长
+
+---
+
+#### Experience Replay (经验回放)
+
+**定义**：存储旧任务样本，混合训练。
+
+```python
+class ExperienceReplay:
+    def __init__(self, buffer_size):
+        self.buffer = []
+        self.buffer_size = buffer_size
+
+    def add(self, samples):
+        self.buffer.extend(samples)
+        # 保持缓冲区大小
+        if len(self.buffer) > self.buffer_size:
+            self.buffer = random.sample(self.buffer, self.buffer_size)
+
+    def sample(self, n):
+        return random.sample(self.buffer, n)
+
+# 训练新任务时
+for batch in new_task_data:
+    # 混合新旧数据
+    old_samples = replay_buffer.sample(batch_size // 2)
+    mixed_batch = batch + old_samples
+
+    loss = compute_loss(model, mixed_batch)
+    loss.backward()
+```
+
+---
+
+### 17.10 模型可解释性进阶
+
+#### Attention Visualization (注意力可视化)
+
+**方法**：
+```python
+import matplotlib.pyplot as plt
+import seaborn as sns
+
+def visualize_attention(attention_weights, tokens):
+    """
+    attention_weights: [seq_len, seq_len]
+    tokens: list of token strings
+    """
+    plt.figure(figsize=(10, 10))
+    sns.heatmap(
+        attention_weights,
+        xticklabels=tokens,
+        yticklabels=tokens,
+        cmap="YlOrRd",
+        cbar=True
+    )
+    plt.title("Attention Weights")
+    plt.show()
+
+# 提取注意力权重
+outputs = model(input_ids, output_attentions=True)
+attention = outputs.attentions  # tuple of [batch, heads, seq, seq]
+
+# 可视化第一个头的注意力
+visualize_attention(attention[0][0, 0].detach(), tokens)
+```
+
+---
+
+#### Integrated Gradients
+
+**定义**：归因方法，计算每个输入特征的重要性。
+
+```python
+def integrated_gradients(model, input, baseline, steps=50):
+    """
+    input: 原始输入
+    baseline: 基线(如全零)
+    """
+    # 线性插值路径
+    alphas = torch.linspace(0, 1, steps)
+
+    gradients = []
+    for alpha in alphas:
+        # 插值输入
+        interpolated = baseline + alpha * (input - baseline)
+        interpolated.requires_grad = True
+
+        # 计算梯度
+        output = model(interpolated)
+        grad = torch.autograd.grad(output.sum(), interpolated)[0]
+        gradients.append(grad)
+
+    # 积分
+    avg_gradients = torch.mean(torch.stack(gradients), dim=0)
+    integrated_grads = (input - baseline) * avg_gradients
+
+    return integrated_grads
+
+# 可视化特征重要性
+attributions = integrated_gradients(model, input_text, baseline)
+```
+
+---
+
+#### SHAP (SHapley Additive exPlanations)
+
+**定义**：基于博弈论的特征归因。
+
+```python
+import shap
+
+# 创建解释器
+explainer = shap.Explainer(model, background_data)
+
+# 计算SHAP值
+shap_values = explainer(test_samples)
+
+# 可视化
+shap.plots.waterfall(shap_values[0])  # 单样本
+shap.plots.beeswarm(shap_values)       # 多样本汇总
+```
+
+**优势**：
+- 理论保证(唯一满足某些公理)
+- 局部和全局解释
+- 模型无关
+
+---
+
+#### Counterfactual Explanations (反事实解释)
+
+**定义**："如果改变X，输出会变成Y"。
+
+```python
+def find_counterfactual(model, original_input, target_class):
+    """
+    寻找最小改变使得预测变为target_class
+    """
+    # 初始化
+    cf = original_input.clone().requires_grad_(True)
+    optimizer = torch.optim.Adam([cf], lr=0.01)
+
+    for step in range(max_steps):
+        optimizer.zero_grad()
+
+        # 目标：预测为target_class且改变最小
+        pred = model(cf)
+        classification_loss = -F.log_softmax(pred, dim=-1)[target_class]
+        proximity_loss = torch.norm(cf - original_input)
+
+        loss = classification_loss + lambda_prox * proximity_loss
+        loss.backward()
+        optimizer.step()
+
+        # 检查是否达到目标
+        if pred.argmax() == target_class:
+            break
+
+    return cf
+
+# 示例
+cf_example = find_counterfactual(
+    model,
+    original_text_embedding,
+    target_class=positive_sentiment
+)
+print(f"Change: {cf_example - original_text_embedding}")
+```
+
+---
+
+## 十八、模型压缩与加速补充
+
+### 18.1 知识蒸馏变体
+
+#### Feature Distillation (特征蒸馏)
+
+**定义**：蒸馏中间层特征。
+
+```python
+class FeatureDistillation(nn.Module):
+    def __init__(self, teacher, student):
+        self.teacher = teacher
+        self.student = student
+        # 特征对齐层(如果维度不同)
+        self.align = nn.Linear(student_dim, teacher_dim)
+
+    def forward(self, x, y):
+        # Teacher前向(不计算梯度)
+        with torch.no_grad():
+            teacher_logits, teacher_features = self.teacher(x, return_features=True)
+
+        # Student前向
+        student_logits, student_features = self.student(x, return_features=True)
+
+        # 特征蒸馏损失
+        feature_loss = 0
+        for t_feat, s_feat in zip(teacher_features, student_features):
+            s_feat_aligned = self.align(s_feat)
+            feature_loss += F.mse_loss(s_feat_aligned, t_feat)
+
+        # 输出蒸馏损失
+        kd_loss = KL_div(student_logits/T, teacher_logits/T) * T**2
+
+        # 真实标签损失
+        ce_loss = F.cross_entropy(student_logits, y)
+
+        # 总损失
+        total_loss = alpha*ce_loss + beta*kd_loss + gamma*feature_loss
+        return total_loss
+```
+
+---
+
+#### Self-Distillation (自蒸馏)
+
+**定义**：模型自己教自己。
+
+**方法**：
+
+**1. Born-Again Networks**
+```python
+# 阶段1：训练第一代模型
+model_gen1 = train(data)
+
+# 阶段2：用第一代教第二代(相同架构)
+model_gen2 = distill(model_gen1, data)
+
+# 可选：迭代多代
+model_gen3 = distill(model_gen2, data)
+```
+
+**2. Deep Mutual Learning**
+```python
+# 多个模型互相学习
+models = [Model() for _ in range(num_models)]
+
+for x, y in data:
+    losses = []
+    for i, model_i in enumerate(models):
+        # 自己的损失
+        pred_i = model_i(x)
+        ce_loss = F.cross_entropy(pred_i, y)
+
+        # 向其他模型学习
+        kd_loss = 0
+        for j, model_j in enumerate(models):
+            if i != j:
+                with torch.no_grad():
+                    pred_j = model_j(x)
+                kd_loss += KL_div(pred_i, pred_j)
+
+        total_loss = ce_loss + kd_loss
+        losses.append(total_loss)
+
+    # 同时更新所有模型
+    for loss, model in zip(losses, models):
+        loss.backward()
+        model.optimizer.step()
+```
+
+---
+
+#### Online Distillation (在线蒸馏)
+
+**定义**：Teacher和Student同时训练。
+
+```python
+# Teacher和Student同时从数据学习
+for x, y in data:
+    # Teacher更新
+    teacher_loss = F.cross_entropy(teacher(x), y)
+    teacher_loss.backward()
+    teacher_optimizer.step()
+
+    # Student从Teacher学习
+    with torch.no_grad():
+        teacher_pred = teacher(x)
+
+    student_pred = student(x)
+    student_loss = (
+        alpha * F.cross_entropy(student_pred, y) +
+        (1-alpha) * KL_div(student_pred, teacher_pred)
+    )
+    student_loss.backward()
+    student_optimizer.step()
+```
+
+---
+
+### 18.2 剪枝进阶
+
+#### Lottery Ticket Hypothesis (彩票假说)
+
+**定义**：大网络中存在小子网络(中奖彩票)，单独训练也能达到相似性能。
+
+**发现**：
+```python
+# 1. 随机初始化
+weights_0 = random_init()
+
+# 2. 训练网络
+weights_trained = train(weights_0)
+
+# 3. 根据重要性剪枝
+mask = find_important_weights(weights_trained)  # 保留5-20%
+
+# 4. 关键：用原始初始化训练剪枝后的网络
+winning_ticket = mask * weights_0  # 重置到初始值
+final_weights = train(winning_ticket)
+
+# 结果：winning_ticket性能接近完整网络!
+```
+
+**影响**：
+- 理论意义重大
+- 预训练可能在寻找好的子结构
+
+---
+
+#### Magnitude Pruning (幅度剪枝)
+
+**定义**：移除权重绝对值小的连接。
+
+```python
+def magnitude_prune(model, sparsity=0.5):
+    """
+    sparsity: 要剪掉的比例
+    """
+    # 收集所有权重
+    all_weights = torch.cat([
+        param.flatten()
+        for param in model.parameters()
+    ])
+
+    # 计算阈值
+    threshold = torch.quantile(torch.abs(all_weights), sparsity)
+
+    # 应用mask
+    for param in model.parameters():
+        mask = torch.abs(param) > threshold
+        param.data *= mask
+
+    return model
+```
+
+---
+
+#### Movement Pruning
+
+**定义**：剪掉训练中移向零的权重。
+
+```python
+def movement_pruning(model, optimizer, sparsity):
+    """
+    跟踪权重的'移动方向'
+    """
+    # 在训练循环中
+    for step in range(training_steps):
+        loss = compute_loss(model(x), y)
+        loss.backward()
+
+        # 计算importance score
+        for param in model.parameters():
+            # 权重和梯度方向相反 → 向零移动 → 不重要
+            importance = -param * param.grad
+            # 存储importance
+
+        optimizer.step()
+
+    # 根据importance剪枝
+    threshold = compute_threshold(importance_scores, sparsity)
+    apply_mask(model, importance_scores > threshold)
+```
+
+---
+
+### 18.3 神经架构搜索进阶
+
+#### Once-for-All (OFA) Networks
+
+**定义**：训练一个超网络，支持多种架构配置。
+
+```python
+class OFANetwork:
+    def __init__(self):
+        # 支持多种深度、宽度、kernel size
+        self.layers = nn.ModuleList([
+            ElasticLayer(
+                depths=[2, 3, 4],        # 可选深度
+                widths=[128, 192, 256],  # 可选宽度
+                kernels=[3, 5, 7]        # 可选kernel
+            )
+            for _ in range(20)
+        ])
+
+    def sample_subnet(self):
+        # 采样一个子网络配置
+        config = {
+            'depth': random.choice([2, 3, 4]),
+            'width': random.choice([128, 192, 256]),
+            'kernel': random.choice([3, 5, 7]),
+        }
+        return config
+
+    def forward(self, x, config):
+        # 根据配置执行
+        for layer in self.layers[:config['depth']]:
+            x = layer(x, width=config['width'], kernel=config['kernel'])
+        return x
+
+# 训练：渐进式收缩
+# 1. 训练最大网络
+# 2. 逐步支持更小的子网络
+# 3. 最终一个网络支持所有配置
+
+# 部署：选择符合资源限制的配置
+if device == "mobile":
+    config = {'depth': 2, 'width': 128, 'kernel': 3}
+elif device == "server":
+    config = {'depth': 4, 'width': 256, 'kernel': 7}
+```
+
+---
+
+#### Hardware-Aware NAS
+
+**定义**：考虑硬件约束的NAS。
+
+```python
+def hardware_aware_search(search_space, target_device):
+    best_arch = None
+    best_score = 0
+
+    for arch in search_space:
+        # 评估准确率
+        accuracy = evaluate_accuracy(arch)
+
+        # 评估延迟(在目标设备上实测)
+        latency = measure_latency(arch, target_device)
+
+        # 评估能耗
+        energy = measure_energy(arch, target_device)
+
+        # 多目标评分
+        if latency < latency_constraint and energy < energy_budget:
+            score = accuracy / (latency * energy)
+            if score > best_score:
+                best_score = score
+                best_arch = arch
+
+    return best_arch
+```
+
+**考虑因素**：
+- 延迟(latency)
+- 吞吐量(throughput)
+- 内存占用
+- 能耗
+- 特定硬件优化(如GPU tensor cores)
+
+---
+
+## 结语
+
+这份完整的AI大模型专有名词指南现已覆盖**1000+核心术语**，从基础架构到前沿技术，从训练优化到实际应用，包括：
+
+- **基础理论**：Transformer、Attention、优化器、损失函数
+- **训练技术**：分布式训练、混合精度、梯度累积、学习率调度
+- **推理优化**：量化、剪枝、蒸馏、KV Cache、Flash Attention
+- **高级方法**：RLHF、DPO、RAG、CoT、元学习、持续学习
+- **前沿研究**：State Space Models、神经符号AI、可解释性、鲁棒性
+- **应用场景**：多模态、代码生成、领域模型、多语言NLP
+
+持续更新中，欢迎补充！🚀
