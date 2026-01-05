@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>面试题快捷导航</title>
+    <title>AI前世今生 - 发展史与算法基础</title>
     <!-- Marked.js for Markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
@@ -1505,8 +1505,8 @@
 
     <div class="container">
         <header>
-            <h1>💯 面试题库</h1>
-            <p class="subtitle">全面的技术面试题集合</p>
+            <h1>🤖 AI前世今生</h1>
+            <p class="subtitle">从图灵测试到大模型时代的完整进化史</p>
         </header>
 
         <div class="search-box">
@@ -1519,38 +1519,14 @@
 
         <div class="content-wrapper">
 
-        <!-- 前端面试题区域 -->
-        <section id="frontendQASection" style="display: none;">
-            <h2 class="category-title">⚛️ 前端面试题</h2>
-            <div class="nav-grid" id="frontendQANav"></div>
-        </section>
-
-        <!-- 后端面试题区域 -->
-        <section id="backendQASection" style="display: none;">
-            <h2 class="category-title">🖥️ 后端面试题</h2>
-            <div class="nav-grid" id="backendQANav"></div>
-        </section>
-
-        <!-- Python面试题区域 -->
-        <section id="pythonQASection" style="display: none;">
-            <h2 class="category-title">🐍 Python面试题</h2>
-            <div class="nav-grid" id="pythonQANav"></div>
-        </section>
-
-        <!-- Python严酷面试题区域 -->
-        <section id="interviewSection" style="display: none;">
-            <h2 class="category-title">🎯 Python严酷面试题 (Top5大厂)</h2>
-            <div class="nav-grid" id="interviewNav"></div>
-        </section>
-
-        <!-- AI前世今生区域 -->
-        <section id="aiHistorySection" style="display: none;">
-            <h2 class="category-title">🤖 AI前世今生</h2>
+        <!-- AI前世今生核心内容 -->
+        <section id="aiHistorySection">
+            <h2 class="category-title">📚 AI发展史与算法基础</h2>
             <div class="nav-grid" id="aiHistoryNav"></div>
         </section>
 
         <footer>
-            <p>快捷导航 | 让你的上网更高效</p>
+            <p>AI前世今生 | 探索人工智能的演进历程</p>
         </footer>
         </div>
     </div>
@@ -1577,41 +1553,13 @@
         // 👇 在这里直接添加你的自定义快捷方式 - 按类别分类
         // ====================================
 
-        // 前端面试题
-        const FRONTEND_QA_SHORTCUTS = [
-        ];
-
-        // 后端面试题
-        const BACKEND_QA_SHORTCUTS = [
-            { name: 'Top5后端面试题-Part1(题1-3)', url: './后端面试题/Top5高难度后端面试题-完整版(含答案).md', icon: '📕' },
-            { name: 'Top5后端面试题-Part2(题4-5)', url: './后端面试题/Top5高难度后端面试题-完整版(含答案)-Part2.md', icon: '📗' },
-            { name: '后端面试题-数据库与SQL优化', url: './后端数据库、中间件相关/后端面试题-数据库与SQL优化.md', icon: '💾' },
-            { name: '后端面试题-缓存与消息队列', url: './后端数据库、中间件相关/后端面试题-缓存与消息队列.md', icon: '⚡' },
-            { name: '后端面试题-系统设计与架构', url: './后端数据库、中间件相关/后端面试题-系统设计与架构.md', icon: '🏗️' },
-            { name: '后端面试题-分布式系统与微服务', url: './后端数据库、中间件相关/后端面试题-分布式系统与微服务.md', icon: '🌐' },
-            { name: '后端面试题-网络与性能优化', url: './后端数据库、中间件相关/后端面试题-网络与性能优化.md', icon: '🚀' },
-        ];
-
-        // Python面试题
-        const PYTHON_QA_SHORTCUTS = [
-            { name: 'Top5大厂Python面试题集', url: './python面试题/Top5大厂Python面试题集.md', icon: '💼' },
-        ];
-
-        // Python严酷面试题
-        const INTERVIEW_SHORTCUTS = [
-        ];
-
-        // AI前世今生
+        // AI发展史核心文档
         const AI_HISTORY_SHORTCUTS = [
             { name: 'AI发展史与算法基础完全指南', url: './AI前世今生/AI发展史与算法基础完全指南.md', icon: '🤖' },
         ];
 
-        // 保持向后兼容，合并所有快捷方式用于搜索
+        // 只包含AI历史文档
         const MY_SHORTCUTS = [
-            ...FRONTEND_QA_SHORTCUTS,
-            ...BACKEND_QA_SHORTCUTS,
-            ...PYTHON_QA_SHORTCUTS,
-            ...INTERVIEW_SHORTCUTS,
             ...AI_HISTORY_SHORTCUTS
         ];
 
@@ -1708,10 +1656,6 @@
 
         // 渲染所有类别的导航
         function renderAllCategories() {
-            renderNavItems(FRONTEND_QA_SHORTCUTS, 'frontendQANav', 'frontendQASection');
-            renderNavItems(BACKEND_QA_SHORTCUTS, 'backendQANav', 'backendQASection');
-            renderNavItems(PYTHON_QA_SHORTCUTS, 'pythonQANav', 'pythonQASection');
-            renderNavItems(INTERVIEW_SHORTCUTS, 'interviewNav', 'interviewSection');
             renderNavItems(AI_HISTORY_SHORTCUTS, 'aiHistoryNav', 'aiHistorySection');
         }
 
@@ -1801,29 +1745,9 @@
         function getAllShortcuts() {
             const allShortcuts = [];
 
-            // 添加前端面试题
-            FRONTEND_QA_SHORTCUTS.forEach(item => {
-                allShortcuts.push({ ...item, category: '前端面试题' });
-            });
-
-            // 添加后端面试题
-            BACKEND_QA_SHORTCUTS.forEach(item => {
-                allShortcuts.push({ ...item, category: '后端面试题' });
-            });
-
-            // 添加Python面试题
-            PYTHON_QA_SHORTCUTS.forEach(item => {
-                allShortcuts.push({ ...item, category: 'Python面试题' });
-            });
-
-            // 添加Python严酷面试题
-            INTERVIEW_SHORTCUTS.forEach(item => {
-                allShortcuts.push({ ...item, category: 'Python严酷面试题' });
-            });
-
             // 添加AI前世今生
             AI_HISTORY_SHORTCUTS.forEach(item => {
-                allShortcuts.push({ ...item, category: 'AI前世今生' });
+                allShortcuts.push({ ...item, category: 'AI发展史' });
             });
 
             return allShortcuts;
