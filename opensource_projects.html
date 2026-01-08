@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>基本知识快捷导航</title>
+    <title>08-开源项目学习</title>
     <!-- Marked.js for Markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
@@ -699,126 +699,52 @@
             }
         }
 
-        /* 添加按钮样式 - 霓虹风格 */
-        .add-btn {
-            background: linear-gradient(135deg, rgba(15, 15, 25, 0.9), rgba(25, 25, 40, 0.85));
-            border-radius: 20px;
-            padding: 35px 18px;
-            text-align: center;
-            text-decoration: none;
-            color: #667eea;
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
-            box-shadow:
-                0 10px 30px rgba(0,0,0,0.5),
-                0 0 20px rgba(102, 126, 234, 0.2),
-                inset 0 1px 0 rgba(255,255,255,0.1);
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            border: 2px dashed rgba(102, 126, 234, 0.5);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .add-btn::before {
-            content: '';
+        /* 预览按钮 - 霓虹风格 */
+        .preview-btn {
             position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #4facfe);
-            border-radius: 20px;
-            opacity: 0;
-            z-index: -1;
-            filter: blur(10px);
-            transition: opacity 0.5s ease;
-            animation: neonRotate 4s linear infinite;
-        }
-
-        .add-btn:hover::before {
-            opacity: 0.6;
-        }
-
-        .add-btn:hover {
-            transform: translateY(-15px) scale(1.08);
-            box-shadow:
-                0 25px 50px rgba(0,0,0,0.6),
-                0 0 40px rgba(102, 126, 234, 0.6),
-                inset 0 1px 0 rgba(255,255,255,0.3);
-            background: linear-gradient(135deg, rgba(25, 25, 40, 0.95), rgba(35, 35, 50, 0.9));
-            border-color: rgba(102, 126, 234, 0.8);
-            color: white;
-        }
-
-        .add-btn .nav-icon {
-            font-size: 3.3em;
-            margin-bottom: 15px;
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
-            position: relative;
-            z-index: 1;
-            filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.6));
-        }
-
-        .add-btn:hover .nav-icon {
-            transform: scale(1.3) rotate(180deg);
-            filter: drop-shadow(0 0 20px rgba(102, 126, 234, 1));
-        }
-
-        .add-btn .nav-title {
-            position: relative;
-            z-index: 1;
-        }
-
-        /* 删除按钮 - 霓虹风格 */
-        .delete-btn {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: linear-gradient(135deg, #ff4757, #ff3838);
+            bottom: 8px;
+            left: 8px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
             border-radius: 50%;
             width: 32px;
             height: 32px;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 10;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.6), 0 0 20px rgba(255, 71, 87, 0.3);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.6), 0 0 20px rgba(102, 126, 234, 0.3);
         }
 
-        .delete-btn::before,
-        .delete-btn::after {
+        .preview-btn::before {
             content: "";
             position: absolute;
             width: 16px;
-            height: 2px;
+            height: 10px;
+            border: 2px solid white;
+            border-radius: 50%;
+        }
+
+        .preview-btn::after {
+            content: "";
+            position: absolute;
+            width: 6px;
+            height: 6px;
             background: white;
-            border-radius: 2px;
+            border-radius: 50%;
         }
 
-        .delete-btn::before {
-            transform: rotate(45deg);
+        .preview-btn:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+            transform: scale(1.2);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.8), 0 0 30px rgba(102, 126, 234, 0.5);
         }
 
-        .delete-btn::after {
-            transform: rotate(-45deg);
-        }
-
-        .delete-btn:hover {
-            background: linear-gradient(135deg, #ff3838, #ff1f1f);
-            transform: scale(1.2) rotate(180deg);
-            box-shadow: 0 6px 20px rgba(255, 71, 87, 0.8), 0 0 30px rgba(255, 71, 87, 0.5);
-        }
-
-        .nav-item.custom:hover .delete-btn {
+        .nav-item.custom:hover .preview-btn {
             display: flex;
             animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
@@ -836,254 +762,6 @@
                 transform: scale(1) rotate(180deg);
                 opacity: 1;
             }
-        }
-
-        /* 编辑按钮 - 霓虹风格 */
-        .edit-btn {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            background: linear-gradient(135deg, #ffa502, #ff8c00);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            font-size: 16px;
-            cursor: pointer;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 15px rgba(255, 165, 2, 0.6), 0 0 20px rgba(255, 165, 2, 0.3);
-        }
-
-        .edit-btn::before {
-            content: "";
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            border-left: 2px solid white;
-            border-bottom: 2px solid white;
-            transform: rotate(-45deg) translate(2px, -2px);
-        }
-
-        .edit-btn::after {
-            content: "";
-            position: absolute;
-            width: 6px;
-            height: 2px;
-            background: white;
-            transform: rotate(45deg) translate(-4px, -4px);
-            border-radius: 1px;
-        }
-
-        .edit-btn:hover {
-            background: linear-gradient(135deg, #ff8c00, #ff7700);
-            transform: scale(1.2) rotate(-30deg);
-            box-shadow: 0 6px 20px rgba(255, 165, 2, 0.8), 0 0 30px rgba(255, 165, 2, 0.5);
-        }
-
-        .nav-item.custom:hover .edit-btn {
-            display: flex;
-            animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        /* 模态框样式 - 深色主题 */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.9);
-            animation: fadeIn 0.3s ease;
-            backdrop-filter: blur(15px);
-        }
-
-        .modal-content {
-            background: linear-gradient(135deg, rgba(15, 15, 25, 0.98), rgba(25, 25, 40, 0.95));
-            margin: 8% auto;
-            padding: 40px;
-            border-radius: 25px;
-            width: 90%;
-            max-width: 520px;
-            box-shadow:
-                0 30px 80px rgba(0,0,0,0.7),
-                0 0 40px rgba(102, 126, 234, 0.3),
-                inset 0 1px 0 rgba(255,255,255,0.1);
-            animation: modalZoomIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            border: 1px solid rgba(102, 126, 234, 0.3);
-        }
-
-        @keyframes modalZoomIn {
-            from {
-                opacity: 0;
-                transform: scale(0.5) translateY(-100px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-80px) scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .modal-header {
-            font-size: 2em;
-            margin-bottom: 30px;
-            color: #fff;
-            font-weight: 700;
-            text-align: center;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 10px;
-            color: rgba(255,255,255,0.9);
-            font-weight: 700;
-            font-size: 0.95em;
-            letter-spacing: 0.5px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 14px 18px;
-            border: 2px solid rgba(102, 126, 234, 0.3);
-            border-radius: 12px;
-            font-size: 15px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(0, 0, 0, 0.3);
-            color: white;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .form-group input::placeholder {
-            color: rgba(255,255,255,0.4);
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow:
-                0 0 0 4px rgba(102,126,234,0.2),
-                0 0 20px rgba(102,126,234,0.3),
-                inset 0 2px 4px rgba(0,0,0,0.3);
-            transform: translateY(-2px);
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 16px 28px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            letter-spacing: 0.5px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            box-shadow: 0 6px 20px rgba(102,126,234,0.5), 0 0 20px rgba(102,126,234,0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(102,126,234,0.6), 0 0 30px rgba(102,126,234,0.4);
-        }
-
-        .btn-primary:active {
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, rgba(100,100,120,0.5), rgba(80,80,100,0.5));
-            color: white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .btn-secondary:hover {
-            background: linear-gradient(135deg, rgba(120,120,140,0.6), rgba(100,100,120,0.6));
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-        }
-
-        .emoji-picker {
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            gap: 8px;
-            margin-top: 12px;
-            padding: 15px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 15px;
-            max-height: 220px;
-            overflow-y: auto;
-            border: 2px solid rgba(102, 126, 234, 0.2);
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
-        }
-
-        .emoji-picker::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .emoji-picker::-webkit-scrollbar-track {
-            background: rgba(0,0,0,0.2);
-            border-radius: 10px;
-        }
-
-        .emoji-picker::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
-        }
-
-        .emoji-item {
-            font-size: 28px;
-            cursor: pointer;
-            padding: 10px;
-            text-align: center;
-            border-radius: 10px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(255,255,255,0.05);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .emoji-item:hover {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            transform: scale(1.4);
-            box-shadow: 0 4px 15px rgba(102,126,234,0.5), 0 0 20px rgba(102,126,234,0.3);
-            z-index: 10;
         }
 
         /* Markdown预览模态框 - 深色主题 */
@@ -1117,6 +795,28 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+        }
+
+        @keyframes modalZoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5) translateY(-100px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-80px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .md-preview-header {
@@ -1389,61 +1089,6 @@
             60%, 100% { content: '...'; }
         }
 
-        /* 预览按钮 - 霓虹风格 */
-        .preview-btn {
-            position: absolute;
-            bottom: 8px;
-            left: 8px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            font-size: 16px;
-            cursor: pointer;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.6), 0 0 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .preview-btn::before {
-            content: "";
-            position: absolute;
-            width: 16px;
-            height: 10px;
-            border: 2px solid white;
-            border-radius: 50%;
-        }
-
-        .preview-btn::after {
-            content: "";
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background: white;
-            border-radius: 50%;
-        }
-
-        .preview-btn:hover {
-            background: linear-gradient(135deg, #764ba2, #667eea);
-            transform: scale(1.2);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.8), 0 0 30px rgba(102, 126, 234, 0.5);
-        }
-
-        .nav-item.custom:hover .preview-btn {
-            display: flex;
-            animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        /* 编辑按钮位置调整(当有预览按钮时) */
-        .nav-item.custom:hover .edit-btn {
-            left: 50px;
-        }
-
         /* 页面加载动画 */
         .page-loader {
             position: fixed;
@@ -1505,8 +1150,8 @@
 
     <div class="container">
         <header>
-            <h1>📚 知识笔记库</h1>
-            <p class="subtitle">系统化的技术学习笔记</p>
+            <h1>📦 开源项目学习</h1>
+            <p class="subtitle">按学习路径整理的优秀开源项目</p>
         </header>
 
         <div class="search-box">
@@ -1519,87 +1164,14 @@
 
         <div class="content-wrapper">
 
-             <!-- 前端笔记区域 -->
-        <section id="frontendSection" style="display: none;">
-            <h2 class="category-title">⚛️ 前端开发笔记</h2>
-            <div class="nav-grid" id="frontendNav"></div>
+        <!-- 开源项目学习核心内容 -->
+        <section id="projectsSection">
+            <h2 class="category-title">📚 开源项目清单</h2>
+            <div class="nav-grid" id="projectsNav"></div>
         </section>
-
-             <!-- 后端笔记区域 -->
-        <section id="backendSection" style="display: none;">
-            <h2 class="category-title">🖥️ 后端开发笔记</h2>
-            <div class="nav-grid" id="backendNav"></div>
-        </section>
-
-             <!-- Python基础知识区域 -->
-        <section id="pythonSection" style="display: none;">
-            <h2 class="category-title">🐍 Python基础知识</h2>
-            <div class="nav-grid" id="pythonNav"></div>
-        </section>
-
-             <!-- AI基础知识区域 -->
-        <section id="aiSection" style="display: none;">
-            <h2 class="category-title">🤖 AI基础知识</h2>
-            <div class="nav-grid" id="aiNav"></div>
-        </section>
-
-             <!-- 编码规范区域 -->
-        <section id="codingStandardsSection" style="display: none;">
-            <h2 class="category-title">📋 编码规范</h2>
-            <div class="nav-grid" id="codingStandardsNav"></div>
-        </section>
-
-             <!-- Coding Prompts区域 -->
-        <section id="codingPromptsSection" style="display: none;">
-            <h2 class="category-title">💻 编程提示词库</h2>
-            <div class="nav-grid" id="codingPromptsNav"></div>
-        </section>
-
-             <!-- User Prompts区域 -->
-        <section id="userPromptsSection" style="display: none;">
-            <h2 class="category-title">👤 用户提示词</h2>
-            <div class="nav-grid" id="userPromptsNav"></div>
-        </section>
-
-             <!-- System Prompts区域 -->
-        <section id="systemPromptsSection" style="display: none;">
-            <h2 class="category-title">⚙️ 系统提示词</h2>
-            <div class="nav-grid" id="systemPromptsNav"></div>
-        </section>
-
-             <!-- 前端工程化方案区域 -->
-        <section id="frontendEngineeringSection" style="display: none;">
-            <h2 class="category-title">🏗️ 前端工程化方案</h2>
-            <div class="nav-grid" id="frontendEngineeringNav"></div>
-        </section>
-
-             <!-- 思维方式区域 -->
-        <section id="thinkingSection" style="display: none;">
-            <h2 class="category-title">🧠 思维方式</h2>
-            <div class="nav-grid" id="thinkingNav"></div>
-        </section>
-
-        <!-- 场景实战区域 -->
-        <section id="scenarioSection" style="display: none;">
-            <h2 class="category-title">🔥 场景实战</h2>
-            <div class="nav-grid" id="scenarioNav"></div>
-        </section>
-
-        <!-- 核心概念区域 -->
-        <section id="conceptSection" style="display: none;">
-            <h2 class="category-title">⚡ 核心概念</h2>
-            <div class="nav-grid" id="conceptNav"></div>
-        </section>
-
-        <!-- 编程工具知识区域 -->
-        <section id="toolSection" style="display: none;">
-            <h2 class="category-title">🔧 编程工具知识</h2>
-            <div class="nav-grid" id="toolNav"></div>
-        </section>
-
 
         <footer>
-            <p>快捷导航 | 让你的上网更高效</p>
+            <p>开源项目学习 | 探索优秀开源项目的奥秘</p>
         </footer>
         </div>
     </div>
@@ -1623,134 +1195,47 @@
 
     <script>
         // ====================================
-        // 👇 在这里直接添加你的自定义快捷方式 - 按类别分类
+        // 👇 在这里直接添加你的自定义快捷方式 - 开源项目
         // ====================================
 
-        // 前端相关笔记
-        const FRONTEND_SHORTCUTS = [
-        ];
+        // 开源项目文档 - 按学习路径循序渐进排列
+        const PROJECT_SHORTCUTS = [
+            // 总览
+            { name: '项目清单总览', url: './08-开源项目学习/项目清单.md', icon: '📋' },
 
-        // 后端相关笔记
-        const BACKEND_SHORTCUTS = [
-            { name: '01-MySQL高阶应用', url: './02-后端开发技术/01-MySQL高阶应用.md', icon: '🐬' },
-            { name: '02-Redis高阶应用', url: './02-后端开发技术/02-Redis高阶应用.md', icon: '📮' },
-            { name: '03-Elasticsearch高阶应用', url: './02-后端开发技术/03-Elasticsearch高阶应用.md', icon: '🔍' },
-            { name: '04-Kafka高阶应用', url: './02-后端开发技术/04-Kafka高阶应用.md', icon: '🚀' },
-            { name: '05-消息队列高阶应用', url: './02-后端开发技术/05-消息队列高阶应用.md', icon: '📬' }
-        ];
+            // 一、编程语言基础
+            { name: 'Python-100天', url: 'https://github.com/jackfrued/Python-100-Days', icon: '🐍' },
+            { name: '前端图文教程', url: 'https://github.com/qianguyihao/Web', icon: '🌐' },
 
-        // Python基础知识
-        const PYTHON_SHORTCUTS = [
-            { name: '01-Python魔法方法详解', url: './01-编程语言基础/01-Python魔法方法详解.md', icon: '✨' },
-            { name: '02-Python装饰器深度解析', url: './01-编程语言基础/02-Python装饰器深度解析.md', icon: '🎨' },
-            { name: '03-Python注解系统高阶详解', url: './01-编程语言基础/03-Python注解系统高阶详解.md', icon: '🏷️' },
-            { name: '04-Python并发编程核心概念详解', url: './01-编程语言基础/04-Python并发编程核心概念详解.md', icon: '⚡' },
-            { name: '05-Python工程化实践指南', url: './01-编程语言基础/05-Python工程化实践指南.md', icon: '🏗️' },
-        ];
+            // 二、AI/机器学习基础
+            { name: '动手学深度学习', url: 'https://github.com/d2l-ai/d2l-zh', icon: '📖' },
+            { name: 'PyTorch训练教程', url: 'https://github.com/TingsongYu/PyTorch_Tutorial', icon: '🔥' },
 
-        // AI基础知识
-        const AI_SHORTCUTS = [
-            { name: '01-机器学习与深度学习核心指南', url: './04-AI基础概念/01-机器学习与深度学习核心指南.md', icon: '🤖' },
-            { name: '02-AI大模型专有名词完全指南', url: './04-AI基础概念/02-AI大模型专有名词完全指南.md', icon: '📖' },
-            { name: '03-AI算法原理与应用实战详解', url: './04-AI基础概念/03-AI算法原理与应用实战详解.md', icon: '⚙️' },
-            { name: '04-RAG检索增强生成技术详解', url: './04-AI基础概念/04-RAG检索增强生成技术详解.md', icon: '🔍' },
-            { name: '05-大模型微调技术详解与实战', url: './04-AI基础概念/05-大模型微调技术详解与实战.md', icon: '🎯' },
-            { name: '06-参数高效微调PEFT技术详解', url: './04-AI基础概念/06-参数高效微调PEFT技术详解.md', icon: '🎛️' },
-            { name: '07-AI智能体技术详解与应用', url: './04-AI基础概念/07-AI智能体技术详解与应用.md', icon: '🤝' },
-            { name: '08-知识图谱技术详解与应用实战', url: './04-AI基础概念/08-知识图谱技术详解与应用实战.md', icon: '🕸️' },
-            { name: '09-MCP技术详解与应用实战', url: './04-AI基础概念/09-MCP技术详解与应用实战.md', icon: '🔌' },
-            { name: '10-密集检索与向量数据库技术详解', url: './04-AI基础概念/10-密集检索与向量数据库技术详解.md', icon: '🗄️' },
-            { name: '11-LLM模型部署与推理优化技术详解', url: './04-AI基础概念/11-LLM模型部署与推理优化技术详解.md', icon: '🚀' },
-            { name: '12-AI模型评估指标详解', url: './04-AI基础概念/12-AI模型评估指标详解.md', icon: '📊' },
-            { name: '13-多语言NLP模型技术详解', url: './04-AI基础概念/13-多语言NLP模型技术详解.md', icon: '🌍' },
-            { name: '14-多模态AI评估技术详解', url: './04-AI基础概念/14-多模态AI评估技术详解.md', icon: '🎨' },
-            { name: '15-领域特定预训练模型详解', url: './04-AI基础概念/15-领域特定预训练模型详解.md', icon: '🏥' },
-            { name: '01-机器学习基础-梯度下降与损失函数', url: './05-AI底层算法/01_机器学习基础_梯度下降与损失函数.md', icon: '📐' },
-            { name: '02-深度学习-反向传播算法完全解析', url: './05-AI底层算法/02_深度学习_反向传播算法完全解析.md', icon: '🔄' },
-            { name: '03-强化学习-马尔可夫决策过程与价值迭代', url: './05-AI底层算法/03_强化学习_马尔可夫决策过程与价值迭代.md', icon: '🎮' },
-            { name: '04-深度学习优化-从SGD到Adam的进化之路', url: './05-AI底层算法/04_深度学习优化_从SGD到Adam的进化之路.md', icon: '⚡' },
-            { name: '05-Transformer架构-注意力机制的数学本质', url: './05-AI底层算法/05_Transformer架构_注意力机制的数学本质.md', icon: '🎯' },
-            { name: '06-PPO强化学习-从理论到实践的极简方案', url: './05-AI底层算法/06_PPO强化学习_从理论到实践的极简方案.md', icon: '🎲' },
-            { name: '07-RL训练稳定性-超参数与批量的trade-off', url: './05-AI底层算法/07_RL训练稳定性_超参数与批量的trade-off.md', icon: '⚖️' },
-            { name: '08-奖励信号设计-从稀疏到稠密的工程实践', url: './05-AI底层算法/08_奖励信号设计_从稀疏到稠密的工程实践.md', icon: '🎁' },
-            { name: '09-LLM优化反模式-复杂技巧的负面案例', url: './05-AI底层算法/09_LLM优化反模式_复杂技巧的负面案例.md', icon: '⚠️' },
-        ];
+            // 三、大模型微调
+            { name: '大模型微调指南', url: 'https://github.com/datawhalechina/self-llm', icon: '🎯' },
+            { name: 'LLaMA-Factory', url: 'https://github.com/hiyouga/LLaMA-Factory', icon: '🏭' },
 
-        // 编码规范笔记
-        const CODING_STANDARDS_SHORTCUTS = [
-        ];
+            // 四、大模型应用开发
+            { name: 'Langchain-Chatchat', url: 'https://github.com/chatchat-space/Langchain-Chatchat', icon: '💬' },
+            { name: 'Dify应用平台', url: 'https://github.com/langgenius/dify', icon: '🤖' },
+            { name: 'MetaGPT多智能体', url: 'https://github.com/geekan/MetaGPT', icon: '🧠' },
 
-        // Coding Prompts - 编程提示词
-        const CODING_PROMPTS_SHORTCUTS = [
-            { name: '01-如何写出高质量提示词完全指南', url: './06-开发技巧与提示词/01-如何写出高质量提示词完全指南.md', icon: '✍️' },
-            { name: '02-AI协助开发的流程', url: './06-开发技巧与提示词/02-AI协助开发的流程.md', icon: '🤖' },
-            { name: '03-学习某个领域时就使用的提示词', url: './06-开发技巧与提示词/03-学习某个领域时就使用的提示词.md', icon: '📚' },
-            { name: '04-如何快速了解一个项目', url: './06-开发技巧与提示词/04-如何快速了解一个项目.md', icon: '🔍' },
-            { name: '05-项目从0到1开发', url: './06-开发技巧与提示词/05-项目从0到1开发.md', icon: '🚀' }
-        ];
+            // 五、AI硬件与边缘部署
+            { name: 'llama.cpp', url: 'https://github.com/ggerganov/llama.cpp', icon: '⚡' },
+            { name: 'YOLOv8目标检测', url: 'https://github.com/ultralytics/ultralytics', icon: '👁️' },
 
-        // User Prompts - 用户提示词
-        const USER_PROMPTS_SHORTCUTS = [
-        ];
+            // 六、优秀架构参考
+            { name: 'FastAPI框架', url: 'https://github.com/tiangolo/fastapi', icon: '🚀' },
+            { name: 'Vue后台管理', url: 'https://github.com/PanJiaChen/vue-element-admin', icon: '📊' },
 
-        // System Prompts - 系统提示词
-        const SYSTEM_PROMPTS_SHORTCUTS = [
-        ];
-
-        // 前端工程化方案
-        const FRONTEND_ENGINEERING_SHORTCUTS = [
-        ];
-
-        // 思维方式
-        const THINKING_SHORTCUTS = [
-        ];
-
-        // 场景实战
-        const SCENARIO_SHORTCUTS = [
-        ];
-
-        // 核心概念
-        const CONCEPT_SHORTCUTS = [
-        ];
-
-        // 编程工具知识
-        const TOOL_SHORTCUTS = [
-            { name: '06-Git高阶使用与实战场景指南', url: './编程工具知识/06-Git高阶使用与实战场景指南.md', icon: '🔧' }
-        ];
-
-        // 保持向后兼容，合并所有快捷方式用于搜索
-        const MY_SHORTCUTS = [
-            ...FRONTEND_SHORTCUTS,
-            ...BACKEND_SHORTCUTS,
-            ...PYTHON_SHORTCUTS,
-            ...AI_SHORTCUTS,
-            ...CODING_STANDARDS_SHORTCUTS,
-            ...CODING_PROMPTS_SHORTCUTS,
-            ...USER_PROMPTS_SHORTCUTS,
-            ...SYSTEM_PROMPTS_SHORTCUTS,
-            ...FRONTEND_ENGINEERING_SHORTCUTS,
-            ...THINKING_SHORTCUTS,
-            ...SCENARIO_SHORTCUTS,
-            ...CONCEPT_SHORTCUTS,
-            ...TOOL_SHORTCUTS
+            // 七、实用工具
+            { name: 'AI短视频生成', url: 'https://github.com/harry0703/MoneyPrinterTurbo', icon: '🎬' },
+            { name: '截图转代码', url: 'https://github.com/abi/screenshot-to-code', icon: '📸' },
         ];
 
         // ====================================
         // 👆 在上面添加你的自定义快捷方式
         // ====================================
-
-        // 常用emoji列表
-        const emojis = ['🌟', '⭐', '💫', '✨', '🔥', '💡', '🎯', '🚀', '💻', '📱',
-                       '🎮', '🎵', '🎬', '📚', '📖', '✏️', '📝', '💼', '🏠', '🏢',
-                       '🛒', '🛍️', '💳', '📧', '✉️', '📮', '🔍', '🔎', '🌐', '🌍',
-                       '📊', '📈', '💰', '🎨', '🖼️', '📷', '📹', '🎤', '🎧', '📻',
-                       '☁️', '🌤️', '⚡', '🌈', '🎪', '🎭', '🎲', '🎰', '🏆', '🥇'];
-
-        // 本地存储的key
-        const STORAGE_KEY = 'customNavItems';
-
-        // 只使用代码中定义的快捷方式
-        let customNavItems = [...MY_SHORTCUTS];
 
         // 创建流星
         function createMeteor() {
@@ -1828,30 +1313,7 @@
 
         // 渲染所有类别的导航
         function renderAllCategories() {
-            renderNavItems(FRONTEND_SHORTCUTS, 'frontendNav', 'frontendSection');
-            renderNavItems(BACKEND_SHORTCUTS, 'backendNav', 'backendSection');
-            renderNavItems(PYTHON_SHORTCUTS, 'pythonNav', 'pythonSection');
-            renderNavItems(AI_SHORTCUTS, 'aiNav', 'aiSection');
-            renderNavItems(CODING_STANDARDS_SHORTCUTS, 'codingStandardsNav', 'codingStandardsSection');
-            renderNavItems(CODING_PROMPTS_SHORTCUTS, 'codingPromptsNav', 'codingPromptsSection');
-            renderNavItems(USER_PROMPTS_SHORTCUTS, 'userPromptsNav', 'userPromptsSection');
-            renderNavItems(SYSTEM_PROMPTS_SHORTCUTS, 'systemPromptsNav', 'systemPromptsSection');
-            renderNavItems(FRONTEND_ENGINEERING_SHORTCUTS, 'frontendEngineeringNav', 'frontendEngineeringSection');
-            renderNavItems(THINKING_SHORTCUTS, 'thinkingNav', 'thinkingSection');
-            renderNavItems(SCENARIO_SHORTCUTS, 'scenarioNav', 'scenarioSection');
-            renderNavItems(CONCEPT_SHORTCUTS, 'conceptNav', 'conceptSection');
-            renderNavItems(TOOL_SHORTCUTS, 'toolNav', 'toolSection');
-        }
-
-        // 保持向后兼容的旧函数名
-        function renderCustomNav() {
-            renderAllCategories();
-        }
-
-        // 3D 卡片鼠标追踪效果 - 已禁用倾斜
-        function add3DEffect() {
-            // 不再添加鼠标追踪的倾斜效果
-            // 卡片的悬停效果由CSS处理
+            renderNavItems(PROJECT_SHORTCUTS, 'projectsNav', 'projectsSection');
         }
 
         window.onclick = function(event) {
@@ -1929,79 +1391,9 @@
         function getAllShortcuts() {
             const allShortcuts = [];
 
-            // 添加页面中的预设快捷方式
-            document.querySelectorAll('.nav-item:not(.custom)').forEach(item => {
-                const title = item.querySelector('.nav-title')?.textContent || '';
-                const url = item.href || '';
-                const icon = item.querySelector('.nav-icon')?.textContent || '🔗';
-                if (title && url) {
-                    allShortcuts.push({ name: title, url, icon, category: '预设' });
-                }
-            });
-
-            // 添加前端笔记
-            FRONTEND_SHORTCUTS.forEach(item => {
-                allShortcuts.push({ ...item, category: '前端' });
-            });
-
-            // 添加后端笔记
-            BACKEND_SHORTCUTS.forEach(item => {
-                allShortcuts.push({ ...item, category: '后端' });
-            });
-
-            // 添加Python笔记
-            PYTHON_SHORTCUTS.forEach(item => {
-                allShortcuts.push({ ...item, category: 'Python' });
-            });
-
-            // 添加AI笔记
-            AI_SHORTCUTS.forEach(item => {
-                allShortcuts.push({ ...item, category: 'AI基础' });
-            });
-
-            // 添加编码规范
-            CODING_STANDARDS_SHORTCUTS.forEach(item => {
-                allShortcuts.push({ ...item, category: '编码规范' });
-            });
-
-            // 添加编程提示词
-            CODING_PROMPTS_SHORTCUTS.forEach(item => {
-                allShortcuts.push({ ...item, category: '编程提示词' });
-            });
-
-            // 添加用户提示词
-            USER_PROMPTS_SHORTCUTS.forEach(item => {
-                allShortcuts.push({ ...item, category: '用户提示词' });
-            });
-
-            // 添加系统提示词
-            SYSTEM_PROMPTS_SHORTCUTS.forEach(item => {
-                allShortcuts.push({ ...item, category: '系统提示词' });
-            });
-
-            // 添加前端工程化方案
-            FRONTEND_ENGINEERING_SHORTCUTS.forEach(item => {
-                allShortcuts.push({ ...item, category: '前端工程化' });
-            });
-
-            // 添加思维方式
-            THINKING_SHORTCUTS.forEach(item => {
-                allShortcuts.push({ ...item, category: '思维方式' });
-            });
-
-            // 添加场景实战
-            SCENARIO_SHORTCUTS.forEach(item => {
-                allShortcuts.push({ ...item, category: '场景实战' });
-            });
-
-            // 添加核心概念
-            CONCEPT_SHORTCUTS.forEach(item => {
-                allShortcuts.push({ ...item, category: '核心概念' });
-            });
-
-            // 添加编程工具知识
-            TOOL_SHORTCUTS.forEach(item => {
-                allShortcuts.push({ ...item, category: '编程工具' });
+            // 添加开源项目
+            PROJECT_SHORTCUTS.forEach(item => {
+                allShortcuts.push({ ...item, category: '开源项目' });
             });
 
             return allShortcuts;
@@ -2137,14 +1529,9 @@
             }, 1000);
 
             createParticles();
-            renderCustomNav();
+            renderAllCategories();
             updateTime();
             setInterval(updateTime, 1000);
-
-            // 添加 3D 效果
-            setTimeout(() => {
-                add3DEffect();
-            }, 100);
         });
     </script>
 </body>
