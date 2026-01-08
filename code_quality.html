@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI前世今生 - 发展史与算法基础</title>
+    <title>代码保持 - 顶级开发实践指南</title>
     <!-- Marked.js for Markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
@@ -699,126 +699,52 @@
             }
         }
 
-        /* 添加按钮样式 - 霓虹风格 */
-        .add-btn {
-            background: linear-gradient(135deg, rgba(15, 15, 25, 0.9), rgba(25, 25, 40, 0.85));
-            border-radius: 20px;
-            padding: 35px 18px;
-            text-align: center;
-            text-decoration: none;
-            color: #667eea;
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
-            box-shadow:
-                0 10px 30px rgba(0,0,0,0.5),
-                0 0 20px rgba(102, 126, 234, 0.2),
-                inset 0 1px 0 rgba(255,255,255,0.1);
-            position: relative;
-            overflow: hidden;
-            cursor: pointer;
-            border: 2px dashed rgba(102, 126, 234, 0.5);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-            justify-content: center;
-            backdrop-filter: blur(10px);
-        }
-
-        .add-btn::before {
-            content: '';
+        /* 预览按钮 - 霓虹风格 */
+        .preview-btn {
             position: absolute;
-            top: -2px;
-            left: -2px;
-            right: -2px;
-            bottom: -2px;
-            background: linear-gradient(45deg, #667eea, #764ba2, #f093fb, #4facfe);
-            border-radius: 20px;
-            opacity: 0;
-            z-index: -1;
-            filter: blur(10px);
-            transition: opacity 0.5s ease;
-            animation: neonRotate 4s linear infinite;
-        }
-
-        .add-btn:hover::before {
-            opacity: 0.6;
-        }
-
-        .add-btn:hover {
-            transform: translateY(-15px) scale(1.08);
-            box-shadow:
-                0 25px 50px rgba(0,0,0,0.6),
-                0 0 40px rgba(102, 126, 234, 0.6),
-                inset 0 1px 0 rgba(255,255,255,0.3);
-            background: linear-gradient(135deg, rgba(25, 25, 40, 0.95), rgba(35, 35, 50, 0.9));
-            border-color: rgba(102, 126, 234, 0.8);
-            color: white;
-        }
-
-        .add-btn .nav-icon {
-            font-size: 3.3em;
-            margin-bottom: 15px;
-            transition: all 0.5s cubic-bezier(0.23, 1, 0.320, 1);
-            position: relative;
-            z-index: 1;
-            filter: drop-shadow(0 0 10px rgba(102, 126, 234, 0.6));
-        }
-
-        .add-btn:hover .nav-icon {
-            transform: scale(1.3) rotate(180deg);
-            filter: drop-shadow(0 0 20px rgba(102, 126, 234, 1));
-        }
-
-        .add-btn .nav-title {
-            position: relative;
-            z-index: 1;
-        }
-
-        /* 删除按钮 - 霓虹风格 */
-        .delete-btn {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: linear-gradient(135deg, #ff4757, #ff3838);
+            bottom: 8px;
+            left: 8px;
+            background: linear-gradient(135deg, #667eea, #764ba2);
             color: white;
             border: none;
             border-radius: 50%;
             width: 32px;
             height: 32px;
-            font-size: 18px;
+            font-size: 16px;
             cursor: pointer;
             display: none;
             align-items: center;
             justify-content: center;
             z-index: 10;
             transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 15px rgba(255, 71, 87, 0.6), 0 0 20px rgba(255, 71, 87, 0.3);
+            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.6), 0 0 20px rgba(102, 126, 234, 0.3);
         }
 
-        .delete-btn::before,
-        .delete-btn::after {
+        .preview-btn::before {
             content: "";
             position: absolute;
             width: 16px;
-            height: 2px;
+            height: 10px;
+            border: 2px solid white;
+            border-radius: 50%;
+        }
+
+        .preview-btn::after {
+            content: "";
+            position: absolute;
+            width: 6px;
+            height: 6px;
             background: white;
-            border-radius: 2px;
+            border-radius: 50%;
         }
 
-        .delete-btn::before {
-            transform: rotate(45deg);
+        .preview-btn:hover {
+            background: linear-gradient(135deg, #764ba2, #667eea);
+            transform: scale(1.2);
+            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.8), 0 0 30px rgba(102, 126, 234, 0.5);
         }
 
-        .delete-btn::after {
-            transform: rotate(-45deg);
-        }
-
-        .delete-btn:hover {
-            background: linear-gradient(135deg, #ff3838, #ff1f1f);
-            transform: scale(1.2) rotate(180deg);
-            box-shadow: 0 6px 20px rgba(255, 71, 87, 0.8), 0 0 30px rgba(255, 71, 87, 0.5);
-        }
-
-        .nav-item.custom:hover .delete-btn {
+        .nav-item.custom:hover .preview-btn {
             display: flex;
             animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
         }
@@ -836,254 +762,6 @@
                 transform: scale(1) rotate(180deg);
                 opacity: 1;
             }
-        }
-
-        /* 编辑按钮 - 霓虹风格 */
-        .edit-btn {
-            position: absolute;
-            top: 8px;
-            left: 8px;
-            background: linear-gradient(135deg, #ffa502, #ff8c00);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            font-size: 16px;
-            cursor: pointer;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 15px rgba(255, 165, 2, 0.6), 0 0 20px rgba(255, 165, 2, 0.3);
-        }
-
-        .edit-btn::before {
-            content: "";
-            position: absolute;
-            width: 12px;
-            height: 12px;
-            border-left: 2px solid white;
-            border-bottom: 2px solid white;
-            transform: rotate(-45deg) translate(2px, -2px);
-        }
-
-        .edit-btn::after {
-            content: "";
-            position: absolute;
-            width: 6px;
-            height: 2px;
-            background: white;
-            transform: rotate(45deg) translate(-4px, -4px);
-            border-radius: 1px;
-        }
-
-        .edit-btn:hover {
-            background: linear-gradient(135deg, #ff8c00, #ff7700);
-            transform: scale(1.2) rotate(-30deg);
-            box-shadow: 0 6px 20px rgba(255, 165, 2, 0.8), 0 0 30px rgba(255, 165, 2, 0.5);
-        }
-
-        .nav-item.custom:hover .edit-btn {
-            display: flex;
-            animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        /* 模态框样式 - 深色主题 */
-        .modal {
-            display: none;
-            position: fixed;
-            z-index: 1000;
-            left: 0;
-            top: 0;
-            width: 100%;
-            height: 100%;
-            background-color: rgba(0,0,0,0.9);
-            animation: fadeIn 0.3s ease;
-            backdrop-filter: blur(15px);
-        }
-
-        .modal-content {
-            background: linear-gradient(135deg, rgba(15, 15, 25, 0.98), rgba(25, 25, 40, 0.95));
-            margin: 8% auto;
-            padding: 40px;
-            border-radius: 25px;
-            width: 90%;
-            max-width: 520px;
-            box-shadow:
-                0 30px 80px rgba(0,0,0,0.7),
-                0 0 40px rgba(102, 126, 234, 0.3),
-                inset 0 1px 0 rgba(255,255,255,0.1);
-            animation: modalZoomIn 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-            border: 1px solid rgba(102, 126, 234, 0.3);
-        }
-
-        @keyframes modalZoomIn {
-            from {
-                opacity: 0;
-                transform: scale(0.5) translateY(-100px);
-            }
-            to {
-                opacity: 1;
-                transform: scale(1) translateY(0);
-            }
-        }
-
-        @keyframes slideDown {
-            from {
-                opacity: 0;
-                transform: translateY(-80px) scale(0.9);
-            }
-            to {
-                opacity: 1;
-                transform: translateY(0) scale(1);
-            }
-        }
-
-        .modal-header {
-            font-size: 2em;
-            margin-bottom: 30px;
-            color: #fff;
-            font-weight: 700;
-            text-align: center;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            background-clip: text;
-            text-shadow: 0 0 30px rgba(102, 126, 234, 0.5);
-        }
-
-        .form-group {
-            margin-bottom: 25px;
-        }
-
-        .form-group label {
-            display: block;
-            margin-bottom: 10px;
-            color: rgba(255,255,255,0.9);
-            font-weight: 700;
-            font-size: 0.95em;
-            letter-spacing: 0.5px;
-        }
-
-        .form-group input {
-            width: 100%;
-            padding: 14px 18px;
-            border: 2px solid rgba(102, 126, 234, 0.3);
-            border-radius: 12px;
-            font-size: 15px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(0, 0, 0, 0.3);
-            color: white;
-            box-shadow: inset 0 2px 4px rgba(0,0,0,0.3);
-        }
-
-        .form-group input::placeholder {
-            color: rgba(255,255,255,0.4);
-        }
-
-        .form-group input:focus {
-            outline: none;
-            border-color: #667eea;
-            box-shadow:
-                0 0 0 4px rgba(102,126,234,0.2),
-                0 0 20px rgba(102,126,234,0.3),
-                inset 0 2px 4px rgba(0,0,0,0.3);
-            transform: translateY(-2px);
-        }
-
-        .modal-buttons {
-            display: flex;
-            gap: 15px;
-            margin-top: 30px;
-        }
-
-        .btn {
-            flex: 1;
-            padding: 16px 28px;
-            border: none;
-            border-radius: 12px;
-            font-size: 16px;
-            font-weight: 700;
-            cursor: pointer;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            letter-spacing: 0.5px;
-        }
-
-        .btn-primary {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            color: white;
-            box-shadow: 0 6px 20px rgba(102,126,234,0.5), 0 0 20px rgba(102,126,234,0.3);
-        }
-
-        .btn-primary:hover {
-            transform: translateY(-3px);
-            box-shadow: 0 10px 30px rgba(102,126,234,0.6), 0 0 30px rgba(102,126,234,0.4);
-        }
-
-        .btn-primary:active {
-            transform: translateY(-1px);
-        }
-
-        .btn-secondary {
-            background: linear-gradient(135deg, rgba(100,100,120,0.5), rgba(80,80,100,0.5));
-            color: white;
-            box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-            border: 1px solid rgba(255,255,255,0.2);
-        }
-
-        .btn-secondary:hover {
-            background: linear-gradient(135deg, rgba(120,120,140,0.6), rgba(100,100,120,0.6));
-            transform: translateY(-3px);
-            box-shadow: 0 8px 25px rgba(0,0,0,0.4);
-        }
-
-        .emoji-picker {
-            display: grid;
-            grid-template-columns: repeat(8, 1fr);
-            gap: 8px;
-            margin-top: 12px;
-            padding: 15px;
-            background: rgba(0,0,0,0.3);
-            border-radius: 15px;
-            max-height: 220px;
-            overflow-y: auto;
-            border: 2px solid rgba(102, 126, 234, 0.2);
-            box-shadow: inset 0 2px 8px rgba(0,0,0,0.3);
-        }
-
-        .emoji-picker::-webkit-scrollbar {
-            width: 8px;
-        }
-
-        .emoji-picker::-webkit-scrollbar-track {
-            background: rgba(0,0,0,0.2);
-            border-radius: 10px;
-        }
-
-        .emoji-picker::-webkit-scrollbar-thumb {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            border-radius: 10px;
-            box-shadow: 0 0 10px rgba(102, 126, 234, 0.5);
-        }
-
-        .emoji-item {
-            font-size: 28px;
-            cursor: pointer;
-            padding: 10px;
-            text-align: center;
-            border-radius: 10px;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            background: rgba(255,255,255,0.05);
-            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
-        }
-
-        .emoji-item:hover {
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            transform: scale(1.4);
-            box-shadow: 0 4px 15px rgba(102,126,234,0.5), 0 0 20px rgba(102,126,234,0.3);
-            z-index: 10;
         }
 
         /* Markdown预览模态框 - 深色主题 */
@@ -1117,6 +795,28 @@
             overflow: hidden;
             display: flex;
             flex-direction: column;
+        }
+
+        @keyframes modalZoomIn {
+            from {
+                opacity: 0;
+                transform: scale(0.5) translateY(-100px);
+            }
+            to {
+                opacity: 1;
+                transform: scale(1) translateY(0);
+            }
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-80px) scale(0.9);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0) scale(1);
+            }
         }
 
         .md-preview-header {
@@ -1389,61 +1089,6 @@
             60%, 100% { content: '...'; }
         }
 
-        /* 预览按钮 - 霓虹风格 */
-        .preview-btn {
-            position: absolute;
-            bottom: 8px;
-            left: 8px;
-            background: linear-gradient(135deg, #667eea, #764ba2);
-            color: white;
-            border: none;
-            border-radius: 50%;
-            width: 32px;
-            height: 32px;
-            font-size: 16px;
-            cursor: pointer;
-            display: none;
-            align-items: center;
-            justify-content: center;
-            z-index: 10;
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
-            box-shadow: 0 4px 15px rgba(102, 126, 234, 0.6), 0 0 20px rgba(102, 126, 234, 0.3);
-        }
-
-        .preview-btn::before {
-            content: "";
-            position: absolute;
-            width: 16px;
-            height: 10px;
-            border: 2px solid white;
-            border-radius: 50%;
-        }
-
-        .preview-btn::after {
-            content: "";
-            position: absolute;
-            width: 6px;
-            height: 6px;
-            background: white;
-            border-radius: 50%;
-        }
-
-        .preview-btn:hover {
-            background: linear-gradient(135deg, #764ba2, #667eea);
-            transform: scale(1.2);
-            box-shadow: 0 6px 20px rgba(102, 126, 234, 0.8), 0 0 30px rgba(102, 126, 234, 0.5);
-        }
-
-        .nav-item.custom:hover .preview-btn {
-            display: flex;
-            animation: bounceIn 0.5s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-        }
-
-        /* 编辑按钮位置调整(当有预览按钮时) */
-        .nav-item.custom:hover .edit-btn {
-            left: 50px;
-        }
-
         /* 页面加载动画 */
         .page-loader {
             position: fixed;
@@ -1505,13 +1150,13 @@
 
     <div class="container">
         <header>
-            <h1>🤖 AI前世今生</h1>
-            <p class="subtitle">从图灵测试到大模型时代的完整进化史</p>
+            <h1>💎 代码保持</h1>
+            <p class="subtitle">顶级开发者的编码艺术与实践准则</p>
         </header>
 
         <div class="search-box">
             <div class="search-container">
-                <input type="text" class="search-input" placeholder="搜索或输入网址... (按 / 快速聚焦)" id="searchInput">
+                <input type="text" class="search-input" placeholder="搜索文档或输入网址... (按 / 快速聚焦)" id="searchInput">
                 <button class="search-btn" onclick="performSearch()"></button>
                 <div class="search-results" id="searchResults"></div>
             </div>
@@ -1519,14 +1164,14 @@
 
         <div class="content-wrapper">
 
-        <!-- AI前世今生核心内容 -->
-        <section id="aiHistorySection">
-            <h2 class="category-title">📚 AI发展史与算法基础</h2>
-            <div class="nav-grid" id="aiHistoryNav"></div>
+        <!-- 代码保持核心内容 -->
+        <section id="codeQualitySection">
+            <h2 class="category-title">📖 开发实践与代码规范</h2>
+            <div class="nav-grid" id="codeQualityNav"></div>
         </section>
 
         <footer>
-            <p>AI前世今生 | 探索人工智能的演进历程</p>
+            <p>代码保持 | 追求卓越的编码艺术</p>
         </footer>
         </div>
     </div>
@@ -1553,40 +1198,20 @@
         // 👇 在这里直接添加你的自定义快捷方式 - 按类别分类
         // ====================================
 
-        // AI发展史核心文档
-        const AI_HISTORY_SHORTCUTS = [
-            { name: '01-引言-AI的三次浪潮', url: './03-AI入门与历史/01-引言-AI的三次浪潮.md', icon: '🌊' },
-            { name: '02-第一章-AI前世1950-2012', url: './03-AI入门与历史/02-第一章-AI前世1950-2012.md', icon: '📜' },
-            { name: '03-第二章-深度学习革命2012-2017', url: './03-AI入门与历史/03-第二章-深度学习革命2012-2017.md', icon: '🧠' },
-            { name: '04-第三章-大模型时代2017-2024', url: './03-AI入门与历史/04-第三章-大模型时代2017-2024.md', icon: '🚀' },
-            { name: '05-第四章-AI算法基础常识', url: './03-AI入门与历史/05-第四章-AI算法基础常识.md', icon: '🔬' },
-            { name: '06-第五章-未来展望与AGI之路', url: './03-AI入门与历史/06-第五章-未来展望与AGI之路.md', icon: '🌟' },
-            { name: '07-深度学习框架与模型训练原理详解', url: './03-AI入门与历史/07-深度学习框架与模型训练原理详解.md', icon: '⚙️' },
-            { name: '08-Transformer架构原理深度解析', url: './03-AI入门与历史/08-Transformer架构原理深度解析.md', icon: '🔮' },
-            { name: 'AI发展史与算法基础完全指南', url: './03-AI入门与历史/AI发展史与算法基础完全指南.md', icon: '🤖' },
+        // 代码保持核心文档
+        const CODE_QUALITY_SHORTCUTS = [
+            { name: 'Python项目顶级开发实践指南', url: './11-代码保持/Python项目顶级开发实践指南.md', icon: '🐍' },
+            { name: '前端项目顶级开发实践指南', url: './11-代码保持/前端项目顶级开发实践指南.md', icon: '⚛️' },
         ];
 
-        // 只包含AI历史文档
+        // 只包含代码保持文档
         const MY_SHORTCUTS = [
-            ...AI_HISTORY_SHORTCUTS
+            ...CODE_QUALITY_SHORTCUTS
         ];
 
         // ====================================
         // 👆 在上面添加你的自定义快捷方式
         // ====================================
-
-        // 常用emoji列表
-        const emojis = ['🌟', '⭐', '💫', '✨', '🔥', '💡', '🎯', '🚀', '💻', '📱',
-                       '🎮', '🎵', '🎬', '📚', '📖', '✏️', '📝', '💼', '🏠', '🏢',
-                       '🛒', '🛍️', '💳', '📧', '✉️', '📮', '🔍', '🔎', '🌐', '🌍',
-                       '📊', '📈', '💰', '🎨', '🖼️', '📷', '📹', '🎤', '🎧', '📻',
-                       '☁️', '🌤️', '⚡', '🌈', '🎪', '🎭', '🎲', '🎰', '🏆', '🥇'];
-
-        // 本地存储的key
-        const STORAGE_KEY = 'customNavItems';
-
-        // 只使用代码中定义的快捷方式
-        let customNavItems = [...MY_SHORTCUTS];
 
         // 创建流星
         function createMeteor() {
@@ -1664,18 +1289,12 @@
 
         // 渲染所有类别的导航
         function renderAllCategories() {
-            renderNavItems(AI_HISTORY_SHORTCUTS, 'aiHistoryNav', 'aiHistorySection');
+            renderNavItems(CODE_QUALITY_SHORTCUTS, 'codeQualityNav', 'codeQualitySection');
         }
 
         // 保持向后兼容的旧函数名
         function renderCustomNav() {
             renderAllCategories();
-        }
-
-        // 3D 卡片鼠标追踪效果 - 已禁用倾斜
-        function add3DEffect() {
-            // 不再添加鼠标追踪的倾斜效果
-            // 卡片的悬停效果由CSS处理
         }
 
         window.onclick = function(event) {
@@ -1753,9 +1372,9 @@
         function getAllShortcuts() {
             const allShortcuts = [];
 
-            // 添加AI前世今生
-            AI_HISTORY_SHORTCUTS.forEach(item => {
-                allShortcuts.push({ ...item, category: 'AI发展史' });
+            // 添加代码保持文档
+            CODE_QUALITY_SHORTCUTS.forEach(item => {
+                allShortcuts.push({ ...item, category: '代码保持' });
             });
 
             return allShortcuts;
@@ -1894,11 +1513,6 @@
             renderCustomNav();
             updateTime();
             setInterval(updateTime, 1000);
-
-            // 添加 3D 效果
-            setTimeout(() => {
-                add3DEffect();
-            }, 100);
         });
     </script>
 </body>

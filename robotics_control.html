@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>AI前世今生 - 发展史与算法基础</title>
+    <title>控制器与机器人技术 - 深度学习指南</title>
     <!-- Marked.js for Markdown parsing -->
     <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
     <style>
@@ -1505,8 +1505,8 @@
 
     <div class="container">
         <header>
-            <h1>🤖 AI前世今生</h1>
-            <p class="subtitle">从图灵测试到大模型时代的完整进化史</p>
+            <h1>🤖 控制器与机器人技术</h1>
+            <p class="subtitle">从经典控制到智能机器人的技术全景</p>
         </header>
 
         <div class="search-box">
@@ -1519,14 +1519,20 @@
 
         <div class="content-wrapper">
 
-        <!-- AI前世今生核心内容 -->
-        <section id="aiHistorySection">
-            <h2 class="category-title">📚 AI发展史与算法基础</h2>
-            <div class="nav-grid" id="aiHistoryNav"></div>
+        <!-- 控制器技术 -->
+        <section id="controllerSection">
+            <h2 class="category-title">🎛️ 控制器技术</h2>
+            <div class="nav-grid" id="controllerNav"></div>
+        </section>
+
+        <!-- 机器人技术 -->
+        <section id="roboticsSection">
+            <h2 class="category-title">🤖 机器人技术</h2>
+            <div class="nav-grid" id="roboticsNav"></div>
         </section>
 
         <footer>
-            <p>AI前世今生 | 探索人工智能的演进历程</p>
+            <p>控制器与机器人技术 | 探索智能控制与机器人的奥秘</p>
         </footer>
         </div>
     </div>
@@ -1553,22 +1559,24 @@
         // 👇 在这里直接添加你的自定义快捷方式 - 按类别分类
         // ====================================
 
-        // AI发展史核心文档
-        const AI_HISTORY_SHORTCUTS = [
-            { name: '01-引言-AI的三次浪潮', url: './03-AI入门与历史/01-引言-AI的三次浪潮.md', icon: '🌊' },
-            { name: '02-第一章-AI前世1950-2012', url: './03-AI入门与历史/02-第一章-AI前世1950-2012.md', icon: '📜' },
-            { name: '03-第二章-深度学习革命2012-2017', url: './03-AI入门与历史/03-第二章-深度学习革命2012-2017.md', icon: '🧠' },
-            { name: '04-第三章-大模型时代2017-2024', url: './03-AI入门与历史/04-第三章-大模型时代2017-2024.md', icon: '🚀' },
-            { name: '05-第四章-AI算法基础常识', url: './03-AI入门与历史/05-第四章-AI算法基础常识.md', icon: '🔬' },
-            { name: '06-第五章-未来展望与AGI之路', url: './03-AI入门与历史/06-第五章-未来展望与AGI之路.md', icon: '🌟' },
-            { name: '07-深度学习框架与模型训练原理详解', url: './03-AI入门与历史/07-深度学习框架与模型训练原理详解.md', icon: '⚙️' },
-            { name: '08-Transformer架构原理深度解析', url: './03-AI入门与历史/08-Transformer架构原理深度解析.md', icon: '🔮' },
-            { name: 'AI发展史与算法基础完全指南', url: './03-AI入门与历史/AI发展史与算法基础完全指南.md', icon: '🤖' },
+        // 控制器技术文档
+        const CONTROLLER_SHORTCUTS = [
+            { name: '01-控制理论基础-从经典到现代', url: './09-控制器技术/01-控制理论基础-从经典到现代.md', icon: '📐' },
+            { name: '02-PID控制器深度解析与工程实践', url: './09-控制器技术/02-PID控制器深度解析与工程实践.md', icon: '🎚️' },
+            { name: '03-模型预测控制MPC原理与应用', url: './09-控制器技术/03-模型预测控制MPC原理与应用.md', icon: '🔮' },
         ];
 
-        // 只包含AI历史文档
+        // 机器人技术文档
+        const ROBOTICS_SHORTCUTS = [
+            { name: '01-机器人学基础-运动学与动力学', url: './10-机器人技术/01-机器人学基础-运动学与动力学.md', icon: '🦾' },
+            { name: '02-SLAM技术-机器人的眼睛', url: './10-机器人技术/02-SLAM技术-机器人的眼睛.md', icon: '👁️' },
+            { name: '03-路径规划与运动控制算法', url: './10-机器人技术/03-路径规划与运动控制算法.md', icon: '🗺️' },
+        ];
+
+        // 合并所有文档
         const MY_SHORTCUTS = [
-            ...AI_HISTORY_SHORTCUTS
+            ...CONTROLLER_SHORTCUTS,
+            ...ROBOTICS_SHORTCUTS
         ];
 
         // ====================================
@@ -1664,7 +1672,8 @@
 
         // 渲染所有类别的导航
         function renderAllCategories() {
-            renderNavItems(AI_HISTORY_SHORTCUTS, 'aiHistoryNav', 'aiHistorySection');
+            renderNavItems(CONTROLLER_SHORTCUTS, 'controllerNav', 'controllerSection');
+            renderNavItems(ROBOTICS_SHORTCUTS, 'roboticsNav', 'roboticsSection');
         }
 
         // 保持向后兼容的旧函数名
@@ -1753,9 +1762,14 @@
         function getAllShortcuts() {
             const allShortcuts = [];
 
-            // 添加AI前世今生
-            AI_HISTORY_SHORTCUTS.forEach(item => {
-                allShortcuts.push({ ...item, category: 'AI发展史' });
+            // 添加控制器技术
+            CONTROLLER_SHORTCUTS.forEach(item => {
+                allShortcuts.push({ ...item, category: '控制器技术' });
+            });
+
+            // 添加机器人技术
+            ROBOTICS_SHORTCUTS.forEach(item => {
+                allShortcuts.push({ ...item, category: '机器人技术' });
             });
 
             return allShortcuts;
