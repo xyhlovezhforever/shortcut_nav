@@ -1,0 +1,2071 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>程序员简历生成器 - Markdown风格 | Developer Resume Builder</title>
+    <!-- Marked.js for Markdown parsing -->
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+    <!-- Highlight.js for code syntax highlighting -->
+    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css">
+    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/highlight.min.js"></script>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            font-family: 'SF Mono', 'Monaco', 'Consolas', 'Courier New', monospace;
+            background: #0d1117;
+            min-height: 100vh;
+            padding: 20px;
+            color: #c9d1d9;
+        }
+
+        .main-container {
+            max-width: 1800px;
+            margin: 0 auto;
+            display: grid;
+            grid-template-columns: 550px 1fr;
+            gap: 20px;
+            height: calc(100vh - 40px);
+        }
+
+        /* 左侧表单区域 - GitHub风格 */
+        .form-panel {
+            background: #161b22;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            padding: 30px;
+            overflow-y: auto;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+        }
+
+        .form-panel::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .form-panel::-webkit-scrollbar-track {
+            background: #0d1117;
+            border-radius: 8px;
+        }
+
+        .form-panel::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 8px;
+        }
+
+        .form-panel::-webkit-scrollbar-thumb:hover {
+            background: #484f58;
+        }
+
+        .form-panel h1 {
+            color: #58a6ff;
+            margin-bottom: 8px;
+            font-size: 1.8em;
+            font-weight: 600;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .form-panel .subtitle {
+            color: #8b949e;
+            margin-bottom: 30px;
+            font-size: 0.9em;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .markdown-hint {
+            background: #1c2128;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            padding: 12px;
+            margin-bottom: 20px;
+            font-size: 0.85em;
+            color: #8b949e;
+        }
+
+        .markdown-hint code {
+            background: #0d1117;
+            padding: 2px 6px;
+            border-radius: 3px;
+            color: #79c0ff;
+            font-family: 'SF Mono', monospace;
+        }
+
+        .form-section {
+            margin-bottom: 30px;
+            padding-bottom: 20px;
+            border-bottom: 1px solid #21262d;
+        }
+
+        .form-section:last-child {
+            border-bottom: none;
+        }
+
+        .section-title {
+            color: #58a6ff;
+            font-size: 1.1em;
+            margin-bottom: 15px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 6px;
+            color: #c9d1d9;
+            font-weight: 500;
+            font-size: 0.9em;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .form-group input,
+        .form-group textarea,
+        .form-group select {
+            width: 100%;
+            padding: 10px 12px;
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 6px;
+            color: #c9d1d9;
+            font-size: 0.9em;
+            transition: all 0.2s;
+            font-family: 'SF Mono', monospace;
+        }
+
+        .form-group input:focus,
+        .form-group textarea:focus,
+        .form-group select:focus {
+            outline: none;
+            border-color: #58a6ff;
+            box-shadow: 0 0 0 3px rgba(88, 166, 255, 0.1);
+        }
+
+        .form-group textarea {
+            resize: vertical;
+            min-height: 80px;
+            line-height: 1.6;
+        }
+
+        .form-row {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 10px;
+        }
+
+        .avatar-upload {
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        .avatar-preview {
+            width: 120px;
+            height: 120px;
+            border-radius: 50%;
+            border: 3px solid #30363d;
+            margin: 0 auto 15px;
+            background: linear-gradient(135deg, #238636 0%, #1f6feb 100%);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 50px;
+            cursor: pointer;
+            transition: transform 0.3s, border-color 0.3s;
+            object-fit: cover;
+        }
+
+        .avatar-preview:hover {
+            transform: scale(1.05);
+            border-color: #58a6ff;
+        }
+
+        .avatar-preview.has-image {
+            background: none;
+            font-size: 0;
+        }
+
+        .upload-btn {
+            display: inline-block;
+            padding: 8px 16px;
+            background: #238636;
+            color: white;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: background 0.2s;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            font-weight: 500;
+        }
+
+        .upload-btn:hover {
+            background: #2ea043;
+        }
+
+        #avatarInput {
+            display: none;
+        }
+
+        /* 动态列表项 */
+        .dynamic-list {
+            margin-top: 10px;
+        }
+
+        .list-item {
+            background: #0d1117;
+            padding: 15px;
+            border-radius: 6px;
+            margin-bottom: 12px;
+            border: 1px solid #30363d;
+            position: relative;
+        }
+
+        .remove-btn {
+            position: absolute;
+            top: 12px;
+            right: 12px;
+            background: #da3633;
+            color: white;
+            border: none;
+            width: 24px;
+            height: 24px;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            line-height: 1;
+            transition: background 0.2s;
+        }
+
+        .remove-btn:hover {
+            background: #f85149;
+        }
+
+        .add-btn {
+            width: 100%;
+            padding: 10px;
+            background: #21262d;
+            border: 1px dashed #30363d;
+            border-radius: 6px;
+            color: #8b949e;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.2s;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            margin-top: 10px;
+        }
+
+        .add-btn:hover {
+            background: #30363d;
+            border-color: #58a6ff;
+            color: #58a6ff;
+        }
+
+        /* 右侧预览区域 - Terminal风格 */
+        .preview-panel {
+            background: #0d1117;
+            border: 1px solid #30363d;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.4);
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .preview-header {
+            background: #161b22;
+            border-bottom: 1px solid #30363d;
+            color: #c9d1d9;
+            padding: 16px 24px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        .preview-header h2 {
+            font-size: 1.1em;
+            font-weight: 600;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .terminal-dots {
+            display: flex;
+            gap: 6px;
+        }
+
+        .dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+        }
+
+        .dot.red { background: #ff5f56; }
+        .dot.yellow { background: #ffbd2e; }
+        .dot.green { background: #27c93f; }
+
+        .style-selector {
+            display: flex;
+            gap: 8px;
+        }
+
+        .style-btn {
+            padding: 6px 14px;
+            background: #21262d;
+            border: 1px solid #30363d;
+            color: #8b949e;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 0.85em;
+            transition: all 0.2s;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .style-btn.active {
+            background: #1f6feb;
+            color: white;
+            border-color: #1f6feb;
+        }
+
+        .style-btn:hover:not(.active) {
+            background: #30363d;
+            border-color: #58a6ff;
+            color: #58a6ff;
+        }
+
+        .preview-content {
+            flex: 1;
+            overflow-y: auto;
+            padding: 30px;
+            background: #0d1117;
+        }
+
+        .preview-content::-webkit-scrollbar {
+            width: 10px;
+        }
+
+        .preview-content::-webkit-scrollbar-track {
+            background: #0d1117;
+        }
+
+        .preview-content::-webkit-scrollbar-thumb {
+            background: #30363d;
+            border-radius: 8px;
+        }
+
+        .preview-content::-webkit-scrollbar-thumb:hover {
+            background: #484f58;
+        }
+
+        #resumePreview {
+            background: #0d1117;
+            max-width: 1000px;
+            margin: 0 auto;
+            min-height: 100%;
+        }
+
+        .preview-actions {
+            padding: 16px 24px;
+            background: #161b22;
+            border-top: 1px solid #30363d;
+            display: flex;
+            gap: 12px;
+        }
+
+        .action-btn {
+            flex: 1;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 6px;
+            font-size: 0.9em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.2s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .btn-primary {
+            background: #238636;
+            color: white;
+        }
+
+        .btn-primary:hover {
+            background: #2ea043;
+        }
+
+        .btn-secondary {
+            background: #21262d;
+            color: #c9d1d9;
+            border: 1px solid #30363d;
+        }
+
+        .btn-secondary:hover {
+            background: #30363d;
+            border-color: #58a6ff;
+        }
+
+        /* Resume Styles - GitHub README风格 */
+        .resume-container {
+            color: #c9d1d9;
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+        }
+
+        .resume-header {
+            text-align: center;
+            padding: 40px 20px 50px;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(90deg, transparent, #58a6ff, #1f6feb, #58a6ff, transparent) 1;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .resume-header::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #58a6ff, #1f6feb);
+            box-shadow: 0 0 20px rgba(88, 166, 255, 0.6);
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(88, 166, 255, 0.6), 0 0 40px rgba(88, 166, 255, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(88, 166, 255, 0.8), 0 0 60px rgba(88, 166, 255, 0.5); }
+        }
+
+        .resume-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid transparent;
+            background-image: linear-gradient(#0d1117, #0d1117), linear-gradient(135deg, #58a6ff, #1f6feb, #238636);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            margin: 0 auto 20px;
+            object-fit: cover;
+            box-shadow: 0 0 30px rgba(88, 166, 255, 0.4), 0 0 60px rgba(31, 111, 235, 0.2);
+            animation: avatarGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes avatarGlow {
+            0%, 100% { box-shadow: 0 0 30px rgba(88, 166, 255, 0.4), 0 0 60px rgba(31, 111, 235, 0.2); }
+            50% { box-shadow: 0 0 40px rgba(88, 166, 255, 0.6), 0 0 80px rgba(31, 111, 235, 0.4); }
+        }
+
+        .resume-name {
+            font-size: 2.5em;
+            font-weight: 600;
+            color: #58a6ff;
+            margin-bottom: 10px;
+        }
+
+        .resume-title {
+            font-size: 1.3em;
+            color: #8b949e;
+            margin-bottom: 20px;
+        }
+
+        .resume-contact {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 0.9em;
+            color: #8b949e;
+        }
+
+        .resume-contact a {
+            color: #58a6ff;
+            text-decoration: none;
+        }
+
+        .resume-contact a:hover {
+            text-decoration: underline;
+        }
+
+        .resume-section {
+            margin-bottom: 40px;
+        }
+
+        .resume-section-title {
+            font-size: 2.2em;
+            font-weight: 800;
+            color: #58a6ff;
+            margin-bottom: 30px;
+            padding: 16px 0 16px 24px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 0.5px;
+            border-left: 6px solid #58a6ff;
+            background: linear-gradient(90deg, rgba(88, 166, 255, 0.08) 0%, transparent 100%);
+            transition: all 0.3s ease;
+        }
+
+        .resume-section-title:hover {
+            border-left-color: #1f6feb;
+            background: linear-gradient(90deg, rgba(88, 166, 255, 0.12) 0%, transparent 100%);
+            padding-left: 28px;
+        }
+
+        .resume-summary {
+            background: linear-gradient(135deg, #161b22 0%, #1c2128 100%);
+            padding: 24px;
+            border-radius: 8px;
+            border: 1px solid #30363d;
+            border-left: 4px solid transparent;
+            border-image: linear-gradient(180deg, #238636, #2ea043) 1;
+            line-height: 1.8;
+            color: #c9d1d9;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(88, 166, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .resume-summary::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(88, 166, 255, 0.3), transparent);
+        }
+
+        .skill-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .skill-item {
+            background: linear-gradient(135deg, #161b22 0%, #1c2128 100%);
+            padding: 14px 18px;
+            border-radius: 8px;
+            border: 1px solid #30363d;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 2px;
+            background: linear-gradient(90deg, #238636, #2ea043, transparent);
+            opacity: 0;
+            transition: opacity 0.3s ease;
+        }
+
+        .skill-item:hover {
+            border-color: #58a6ff;
+            box-shadow: 0 4px 16px rgba(88, 166, 255, 0.2), 0 0 20px rgba(88, 166, 255, 0.1);
+            transform: translateY(-2px);
+        }
+
+        .skill-item:hover::before {
+            opacity: 1;
+        }
+
+        .skill-name {
+            color: #58a6ff;
+            font-weight: 600;
+            margin-bottom: 8px;
+            font-size: 0.95em;
+        }
+
+        .skill-bar {
+            height: 10px;
+            background: #21262d;
+            border-radius: 6px;
+            overflow: hidden;
+            box-shadow: inset 0 2px 4px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .skill-bar::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.1), transparent);
+        }
+
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #238636 0%, #2ea043 50%, #3fb950 100%);
+            border-radius: 6px;
+            transition: width 1s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-progress::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.3), transparent);
+            animation: shimmer 2s infinite;
+        }
+
+        @keyframes shimmer {
+            0% { left: -100%; }
+            100% { left: 100%; }
+        }
+
+        .skill-progress::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 50%;
+            background: linear-gradient(180deg, rgba(255, 255, 255, 0.2), transparent);
+            border-radius: 6px 6px 0 0;
+        }
+
+        .experience-item,
+        .project-item,
+        .education-item {
+            background: linear-gradient(135deg, #161b22 0%, #1c2128 100%);
+            padding: 24px;
+            border-radius: 10px;
+            border: 1px solid #30363d;
+            border-left: 4px solid transparent;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            position: relative;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .experience-item::before,
+        .project-item::before,
+        .education-item::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #58a6ff, #1f6feb);
+            box-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
+        }
+
+        .experience-item::after,
+        .project-item::after,
+        .education-item::after {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, rgba(88, 166, 255, 0.3), transparent);
+        }
+
+        .experience-item:hover,
+        .project-item:hover,
+        .education-item:hover {
+            border-color: #58a6ff;
+            box-shadow: 0 6px 20px rgba(88, 166, 255, 0.2), 0 0 30px rgba(88, 166, 255, 0.1);
+            transform: translateX(4px);
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 12px;
+            gap: 15px;
+        }
+
+        .item-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #58a6ff;
+        }
+
+        .item-company {
+            color: #8b949e;
+            font-size: 0.95em;
+            margin-top: 4px;
+        }
+
+        .item-date {
+            color: #8b949e;
+            font-size: 0.85em;
+            white-space: nowrap;
+            background: linear-gradient(135deg, #21262d 0%, #1c2128 100%);
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 1px solid #30363d;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(88, 166, 255, 0.05);
+        }
+
+        .markdown-content {
+            color: #c9d1d9;
+            line-height: 1.8;
+        }
+
+        .markdown-content ul {
+            margin-left: 20px;
+            margin-top: 10px;
+        }
+
+        .markdown-content li {
+            margin-bottom: 8px;
+        }
+
+        .markdown-content code {
+            background: linear-gradient(135deg, #1c2128 0%, #21262d 100%);
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: #79c0ff;
+            font-family: 'SF Mono', monospace;
+            font-size: 0.9em;
+            border: 1px solid #30363d;
+            box-shadow: 0 1px 3px rgba(0, 0, 0, 0.2);
+        }
+
+        .markdown-content pre {
+            background: linear-gradient(135deg, #161b22 0%, #1c2128 100%);
+            padding: 18px;
+            border-radius: 8px;
+            overflow-x: auto;
+            margin: 12px 0;
+            border: 1px solid #30363d;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(88, 166, 255, 0.05);
+            position: relative;
+        }
+
+        .markdown-content pre::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(88, 166, 255, 0.3), transparent);
+        }
+
+        .markdown-content pre code {
+            background: none;
+            padding: 0;
+            border: none;
+            box-shadow: none;
+        }
+
+        .markdown-content strong {
+            color: #58a6ff;
+            font-weight: 600;
+        }
+
+        .markdown-content a {
+            color: #58a6ff;
+            text-decoration: none;
+        }
+
+        .markdown-content a:hover {
+            text-decoration: underline;
+        }
+
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .tech-tag {
+            background: linear-gradient(135deg, #1c2128 0%, #21262d 100%);
+            color: #58a6ff;
+            padding: 6px 14px;
+            border-radius: 14px;
+            font-size: 0.85em;
+            border: 1px solid #30363d;
+            box-shadow: 0 2px 6px rgba(0, 0, 0, 0.2), inset 0 1px 0 rgba(88, 166, 255, 0.1);
+            transition: all 0.2s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .tech-tag::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: -100%;
+            width: 100%;
+            height: 100%;
+            background: linear-gradient(90deg, transparent, rgba(88, 166, 255, 0.2), transparent);
+            transition: left 0.3s ease;
+        }
+
+        .tech-tag:hover {
+            background: linear-gradient(135deg, #238636 0%, #2ea043 100%);
+            color: white;
+            border-color: #2ea043;
+            box-shadow: 0 4px 12px rgba(35, 134, 54, 0.4), 0 0 20px rgba(35, 134, 54, 0.2);
+            transform: translateY(-2px);
+        }
+
+        .tech-tag:hover::before {
+            left: 100%;
+        }
+
+        /* 响应式 */
+        @media (max-width: 1400px) {
+            .main-container {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+
+            .preview-panel {
+                height: 600px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="main-container">
+        <!-- 左侧表单面板 -->
+        <div class="form-panel">
+            <h1>💻 Developer Resume Builder</h1>
+            <p class="subtitle">程序员专属简历生成器 - 支持 Markdown 语法</p>
+
+            <div class="markdown-hint">
+                💡 <strong>Markdown 支持</strong><br>
+                描述区域支持 Markdown 语法：<code>**粗体**</code> <code>`代码`</code> <code>[链接](url)</code> <code>- 列表</code>
+            </div>
+
+            <!-- 头像上传 -->
+            <div class="avatar-upload">
+                <img id="avatarPreview" class="avatar-preview" src="" alt="👨‍💻" onerror="this.style.display='flex'; this.innerHTML='👨‍💻';">
+                <label for="avatarInput" class="upload-btn">📷 上传头像</label>
+                <input type="file" id="avatarInput" accept="image/*">
+            </div>
+
+            <!-- 基本信息 -->
+            <div class="form-section">
+                <div class="section-title">👤 基本信息</div>
+                <div class="form-group">
+                    <label>Name / 姓名 *</label>
+                    <input type="text" id="name" placeholder="Zhang San">
+                </div>
+                <div class="form-group">
+                    <label>Job Title / 职位 *</label>
+                    <input type="text" id="title" placeholder="Senior Software Engineer">
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Email</label>
+                        <input type="email" id="email" placeholder="dev@example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>Phone</label>
+                        <input type="tel" id="phone" placeholder="+86 138-0000-0000">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Location</label>
+                        <input type="text" id="location" placeholder="Beijing, China">
+                    </div>
+                    <div class="form-group">
+                        <label>GitHub</label>
+                        <input type="text" id="github" placeholder="github.com/username">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Blog / Website</label>
+                        <input type="text" id="website" placeholder="blog.example.com">
+                    </div>
+                    <div class="form-group">
+                        <label>LinkedIn (Optional)</label>
+                        <input type="text" id="linkedin" placeholder="linkedin.com/in/xxx">
+                    </div>
+                </div>
+            </div>
+
+            <!-- 个人简介 -->
+            <div class="form-section">
+                <div class="section-title">📝 个人简介</div>
+                <div class="form-group">
+                    <label>Summary (Markdown supported)</label>
+                    <textarea id="summary" rows="5" placeholder="例如：&#10;拥有 **5年+** 全栈开发经验，精通 `Python` 和 `JavaScript`&#10;&#10;- 主导过多个千万级用户产品&#10;- 擅长微服务架构和性能优化&#10;- 开源贡献者，GitHub `1000+` stars"></textarea>
+                </div>
+            </div>
+
+            <!-- 专业技能 -->
+            <div class="form-section">
+                <div class="section-title">💻 技能栈</div>
+                <div class="form-group">
+                    <label>Skills (格式：技能名称 | 熟练度)</label>
+                    <textarea id="skills" rows="6" placeholder="Python/Django/FastAPI | 95%&#10;JavaScript/TypeScript/React | 90%&#10;Node.js/Express/Nest.js | 85%&#10;Docker/Kubernetes/CI/CD | 80%&#10;PostgreSQL/MongoDB/Redis | 85%&#10;AWS/GCP/云原生架构 | 75%"></textarea>
+                </div>
+            </div>
+
+            <!-- 工作经历 -->
+            <div class="form-section">
+                <div class="section-title">💼 工作经历</div>
+                <div id="experienceList" class="dynamic-list"></div>
+                <button class="add-btn" onclick="addExperience()">+ 添加工作经历</button>
+            </div>
+
+            <!-- 项目经验 -->
+            <div class="form-section">
+                <div class="section-title">🚀 项目经历</div>
+                <div id="projectList" class="dynamic-list"></div>
+                <button class="add-btn" onclick="addProject()">+ 添加项目经历</button>
+            </div>
+
+            <!-- 教育背景 -->
+            <div class="form-section">
+                <div class="section-title">🎓 教育背景</div>
+                <div id="educationList" class="dynamic-list"></div>
+                <button class="add-btn" onclick="addEducation()">+ 添加教育背景</button>
+            </div>
+        </div>
+
+        <!-- 右侧预览面板 -->
+        <div class="preview-panel">
+            <div class="preview-header">
+                <div class="terminal-dots">
+                    <div class="dot red"></div>
+                    <div class="dot yellow"></div>
+                    <div class="dot green"></div>
+                </div>
+                <h2>⚡ Live Preview</h2>
+                <div class="style-selector">
+                    <button class="style-btn active" onclick="changeStyle('github')">GitHub Style</button>
+                    <button class="style-btn" onclick="changeStyle('terminal')">Terminal Style</button>
+                </div>
+            </div>
+            <div class="preview-content">
+                <div id="resumePreview"></div>
+            </div>
+            <div class="preview-actions">
+                <button class="action-btn btn-secondary" onclick="exportHTML()">
+                    <span>📄</span>
+                    <span>导出 HTML</span>
+                </button>
+                <button class="action-btn btn-secondary" onclick="exportPNG()">
+                    <span>🖼️</span>
+                    <span>导出 PNG</span>
+                </button>
+                <button class="action-btn btn-primary" onclick="saveResume()">
+                    <span>💾</span>
+                    <span>保存</span>
+                </button>
+                <button class="action-btn btn-secondary" onclick="resetToDefault()" style="background: #da3633; border-color: #da3633;">
+                    <span>🔄</span>
+                    <span>重置</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Configure marked.js
+        marked.setOptions({
+            breaks: true,
+            gfm: true,
+            highlight: function(code, lang) {
+                if (lang && hljs.getLanguage(lang)) {
+                    return hljs.highlight(code, { language: lang }).value;
+                }
+                return hljs.highlightAuto(code).value;
+            }
+        });
+
+        // Global variables
+        let currentStyle = 'github';
+        let avatarData = '';
+
+        // Initialize
+        window.onload = function() {
+            const hasData = loadSavedData();
+
+            // If no saved data, load default content
+            if (!hasData) {
+                loadDefaultContent();
+            }
+
+            // Ensure preview is updated
+            updatePreview();
+
+            // Bind input events
+            document.querySelectorAll('input, textarea').forEach(el => {
+                el.addEventListener('input', updatePreview);
+            });
+
+            // Avatar upload
+            document.getElementById('avatarInput').addEventListener('change', function(e) {
+                const file = e.target.files[0];
+                if (file) {
+                    const reader = new FileReader();
+                    reader.onload = function(e) {
+                        avatarData = e.target.result;
+                        document.getElementById('avatarPreview').src = avatarData;
+                        document.getElementById('avatarPreview').classList.add('has-image');
+                        updatePreview();
+                    };
+                    reader.readAsDataURL(file);
+                }
+            });
+        };
+
+        // Add Experience
+        function addExperience() {
+            const id = Date.now();
+            const html = `
+                <div class="list-item" data-id="${id}">
+                    <button class="remove-btn" onclick="removeItem(this)">×</button>
+                    <div class="form-group">
+                        <label>Job Title</label>
+                        <input type="text" class="exp-title" placeholder="Senior Backend Engineer" oninput="updatePreview()">
+                    </div>
+                    <div class="form-group">
+                        <label>Company</label>
+                        <input type="text" class="exp-company" placeholder="Tech Company Inc." oninput="updatePreview()">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Start Date</label>
+                            <input type="text" class="exp-start" placeholder="2020.06" oninput="updatePreview()">
+                        </div>
+                        <div class="form-group">
+                            <label>End Date</label>
+                            <input type="text" class="exp-end" placeholder="Present" oninput="updatePreview()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Description (Markdown supported)</label>
+                        <textarea class="exp-desc" rows="4" placeholder="例如：&#10;- 主导 **微服务架构升级**，系统 QPS 提升 **300%**&#10;- 优化 SQL 查询，慢查询减少 \`85%\`&#10;- 使用 \`Python\` + \`FastAPI\` 重构核心服务" oninput="updatePreview()"></textarea>
+                    </div>
+                </div>
+            `;
+            document.getElementById('experienceList').insertAdjacentHTML('beforeend', html);
+        }
+
+        // Add Project
+        function addProject() {
+            const id = Date.now();
+            const html = `
+                <div class="list-item" data-id="${id}">
+                    <button class="remove-btn" onclick="removeItem(this)">×</button>
+                    <div class="form-group">
+                        <label>Project Name</label>
+                        <input type="text" class="proj-name" placeholder="Awesome Project" oninput="updatePreview()">
+                    </div>
+                    <div class="form-group">
+                        <label>Project URL (Optional)</label>
+                        <input type="text" class="proj-url" placeholder="https://github.com/user/project" oninput="updatePreview()">
+                    </div>
+                    <div class="form-group">
+                        <label>Duration</label>
+                        <input type="text" class="proj-time" placeholder="2023.01 - 2023.08" oninput="updatePreview()">
+                    </div>
+                    <div class="form-group">
+                        <label>Description (Markdown supported)</label>
+                        <textarea class="proj-desc" rows="4" placeholder="例如：&#10;基于 **NLP** 的智能客服系统，集成 \`ChatGPT API\`&#10;&#10;- 实现多轮对话引擎，支持上下文理解&#10;- 系统上线后客服工作量减少 **50%**&#10;- 项目获得公司 **技术创新奖**" oninput="updatePreview()"></textarea>
+                    </div>
+                    <div class="form-group">
+                        <label>Tech Stack (逗号分隔)</label>
+                        <input type="text" class="proj-tech" placeholder="Python, FastAPI, OpenAI, Redis, Docker" oninput="updatePreview()">
+                    </div>
+                </div>
+            `;
+            document.getElementById('projectList').insertAdjacentHTML('beforeend', html);
+        }
+
+        // Add Education
+        function addEducation() {
+            const id = Date.now();
+            const html = `
+                <div class="list-item" data-id="${id}">
+                    <button class="remove-btn" onclick="removeItem(this)">×</button>
+                    <div class="form-group">
+                        <label>Degree & Major</label>
+                        <input type="text" class="edu-degree" placeholder="B.S. in Computer Science" oninput="updatePreview()">
+                    </div>
+                    <div class="form-group">
+                        <label>University</label>
+                        <input type="text" class="edu-school" placeholder="MIT" oninput="updatePreview()">
+                    </div>
+                    <div class="form-row">
+                        <div class="form-group">
+                            <label>Start Date</label>
+                            <input type="text" class="edu-start" placeholder="2015.09" oninput="updatePreview()">
+                        </div>
+                        <div class="form-group">
+                            <label>End Date</label>
+                            <input type="text" class="edu-end" placeholder="2019.06" oninput="updatePreview()">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label>Additional Info</label>
+                        <input type="text" class="edu-details" placeholder="GPA: 3.8/4.0 | Honor Graduate" oninput="updatePreview()">
+                    </div>
+                </div>
+            `;
+            document.getElementById('educationList').insertAdjacentHTML('beforeend', html);
+        }
+
+        // Remove item
+        function removeItem(btn) {
+            btn.parentElement.remove();
+            updatePreview();
+        }
+
+        // Change style
+        function changeStyle(style) {
+            currentStyle = style;
+            document.querySelectorAll('.style-btn').forEach(btn => btn.classList.remove('active'));
+            event.target.classList.add('active');
+            updatePreview();
+        }
+
+        // Update preview
+        function updatePreview() {
+            const data = collectFormData();
+            const html = generateResume(data);
+            document.getElementById('resumePreview').innerHTML = html;
+
+            // Highlight code blocks
+            document.querySelectorAll('pre code').forEach((block) => {
+                hljs.highlightElement(block);
+            });
+        }
+
+        // Collect form data
+        function collectFormData() {
+            return {
+                avatar: avatarData,
+                name: document.getElementById('name').value || 'Your Name',
+                title: document.getElementById('title').value || 'Software Engineer',
+                email: document.getElementById('email').value || 'dev@example.com',
+                phone: document.getElementById('phone').value || '+86 138-0000-0000',
+                location: document.getElementById('location').value || 'Beijing, China',
+                github: document.getElementById('github').value || 'github.com/username',
+                website: document.getElementById('website').value || '',
+                linkedin: document.getElementById('linkedin').value || '',
+                summary: document.getElementById('summary').value || '',
+                skills: parseSkills(document.getElementById('skills').value),
+                experiences: parseExperiences(),
+                projects: parseProjects(),
+                educations: parseEducations()
+            };
+        }
+
+        // Parse skills
+        function parseSkills(text) {
+            if (!text.trim()) return [];
+            return text.split('\n').filter(line => line.trim()).map(line => {
+                const parts = line.split('|').map(s => s.trim());
+                return {
+                    name: parts[0] || '',
+                    level: parts[1] || '80%'
+                };
+            });
+        }
+
+        // Parse experiences
+        function parseExperiences() {
+            const items = [];
+            document.querySelectorAll('#experienceList .list-item').forEach(item => {
+                const title = item.querySelector('.exp-title').value;
+                if (!title) return;
+
+                items.push({
+                    title: title,
+                    company: item.querySelector('.exp-company').value,
+                    start: item.querySelector('.exp-start').value,
+                    end: item.querySelector('.exp-end').value,
+                    description: item.querySelector('.exp-desc').value
+                });
+            });
+            return items;
+        }
+
+        // Parse projects
+        function parseProjects() {
+            const items = [];
+            document.querySelectorAll('#projectList .list-item').forEach(item => {
+                const name = item.querySelector('.proj-name').value;
+                if (!name) return;
+
+                const techText = item.querySelector('.proj-tech').value;
+                const techs = techText.split(',').map(t => t.trim()).filter(t => t);
+
+                items.push({
+                    name: name,
+                    url: item.querySelector('.proj-url').value,
+                    time: item.querySelector('.proj-time').value,
+                    description: item.querySelector('.proj-desc').value,
+                    techs: techs
+                });
+            });
+            return items;
+        }
+
+        // Parse educations
+        function parseEducations() {
+            const items = [];
+            document.querySelectorAll('#educationList .list-item').forEach(item => {
+                const degree = item.querySelector('.edu-degree').value;
+                if (!degree) return;
+
+                items.push({
+                    degree: degree,
+                    school: item.querySelector('.edu-school').value,
+                    start: item.querySelector('.edu-start').value,
+                    end: item.querySelector('.edu-end').value,
+                    details: item.querySelector('.edu-details').value
+                });
+            });
+            return items;
+        }
+
+        // Generate resume HTML
+        function generateResume(data) {
+            const avatarHtml = data.avatar ?
+                `<img src="${data.avatar}" class="resume-avatar" alt="${data.name}">` :
+                `<div class="resume-avatar" style="display: flex; align-items: center; justify-content: center; background: linear-gradient(135deg, #238636 0%, #1f6feb 100%); font-size: 60px;">👨‍💻</div>`;
+
+            let contactItems = [
+                `📧 ${data.email}`,
+                `📱 ${data.phone}`,
+                `📍 ${data.location}`,
+                `<a href="https://${data.github}" target="_blank">🔗 ${data.github}</a>`
+            ];
+
+            if (data.website) {
+                contactItems.push(`<a href="https://${data.website}" target="_blank">🌐 ${data.website}</a>`);
+            }
+            if (data.linkedin) {
+                contactItems.push(`<a href="https://${data.linkedin}" target="_blank">💼 LinkedIn</a>`);
+            }
+
+            let skillsHtml = data.skills.map(skill => `
+                <div class="skill-item">
+                    <div class="skill-name">${skill.name}</div>
+                    <div class="skill-bar">
+                        <div class="skill-progress" style="width: ${skill.level}"></div>
+                    </div>
+                </div>
+            `).join('');
+
+            let experiencesHtml = data.experiences.map(exp => `
+                <div class="experience-item">
+                    <div class="item-header">
+                        <div>
+                            <div class="item-title">${exp.title}</div>
+                            <div class="item-company">${exp.company}</div>
+                        </div>
+                        <div class="item-date">${exp.start} - ${exp.end}</div>
+                    </div>
+                    <div class="markdown-content">${marked.parse(exp.description || '')}</div>
+                </div>
+            `).join('');
+
+            let projectsHtml = data.projects.map(proj => {
+                const projectTitle = proj.url ?
+                    `<a href="${proj.url}" target="_blank">${proj.name} 🔗</a>` :
+                    proj.name;
+
+                return `
+                    <div class="project-item">
+                        <div class="item-header">
+                            <div class="item-title">${projectTitle}</div>
+                            <div class="item-date">${proj.time}</div>
+                        </div>
+                        <div class="markdown-content">${marked.parse(proj.description || '')}</div>
+                        ${proj.techs.length > 0 ? `
+                            <div class="tech-tags">
+                                ${proj.techs.map(t => `<span class="tech-tag">${t}</span>`).join('')}
+                            </div>
+                        ` : ''}
+                    </div>
+                `;
+            }).join('');
+
+            let educationsHtml = data.educations.map(edu => `
+                <div class="education-item">
+                    <div class="item-header">
+                        <div>
+                            <div class="item-title">${edu.degree}</div>
+                            <div class="item-company">${edu.school}</div>
+                        </div>
+                        <div class="item-date">${edu.start} - ${edu.end}</div>
+                    </div>
+                    ${edu.details ? `<div class="markdown-content">${edu.details}</div>` : ''}
+                </div>
+            `).join('');
+
+            return `
+                <div class="resume-container">
+                    <div class="resume-header">
+                        ${avatarHtml}
+                        <h1 class="resume-name">${data.name}</h1>
+                        <div class="resume-title">${data.title}</div>
+                        <div class="resume-contact">
+                            ${contactItems.join(' <span style="color: #30363d;">|</span> ')}
+                        </div>
+                    </div>
+
+                    ${data.summary ? `
+                        <div class="resume-section">
+                            <h2 class="resume-section-title">📝 个人简介</h2>
+                            <div class="resume-summary markdown-content">${marked.parse(data.summary)}</div>
+                        </div>
+                    ` : ''}
+
+                    ${skillsHtml ? `
+                        <div class="resume-section">
+                            <h2 class="resume-section-title">💻 技能栈</h2>
+                            <div class="skill-grid">${skillsHtml}</div>
+                        </div>
+                    ` : ''}
+
+                    ${experiencesHtml ? `
+                        <div class="resume-section">
+                            <h2 class="resume-section-title">💼 工作经历</h2>
+                            ${experiencesHtml}
+                        </div>
+                    ` : ''}
+
+                    ${projectsHtml ? `
+                        <div class="resume-section">
+                            <h2 class="resume-section-title">🚀 项目经历</h2>
+                            ${projectsHtml}
+                        </div>
+                    ` : ''}
+
+                    ${educationsHtml ? `
+                        <div class="resume-section">
+                            <h2 class="resume-section-title">🎓 教育背景</h2>
+                            ${educationsHtml}
+                        </div>
+                    ` : ''}
+                </div>
+            `;
+        }
+
+        // Export HTML
+        function exportHTML() {
+            const data = collectFormData();
+            const html = generateFullHTML(data);
+
+            const blob = new Blob([html], { type: 'text/html' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `resume_${data.name.replace(/\s+/g, '_')}_${Date.now()}.html`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+
+            console.log('✅ HTML文件已导出');
+        }
+
+        // Export PNG
+        async function exportPNG() {
+            try {
+                // 使用html2canvas库（需要CDN）
+                if (typeof html2canvas === 'undefined') {
+                    // 动态加载html2canvas
+                    const script = document.createElement('script');
+                    script.src = 'https://cdn.jsdelivr.net/npm/html2canvas@1.4.1/dist/html2canvas.min.js';
+                    script.onload = function() {
+                        captureAndDownloadPNG();
+                    };
+                    document.head.appendChild(script);
+                } else {
+                    captureAndDownloadPNG();
+                }
+            } catch (error) {
+                console.error('导出PNG失败:', error);
+                alert('导出PNG失败，请使用浏览器截图功能\n\nWindows: Win + Shift + S\nMac: Cmd + Shift + 4');
+            }
+        }
+
+        async function captureAndDownloadPNG() {
+            const element = document.getElementById('resumePreview');
+
+            try {
+                const canvas = await html2canvas(element, {
+                    backgroundColor: '#0d1117',
+                    scale: 2, // 高清晰度
+                    logging: false,
+                    useCORS: true
+                });
+
+                canvas.toBlob(function(blob) {
+                    const url = URL.createObjectURL(blob);
+                    const a = document.createElement('a');
+                    const data = collectFormData();
+                    a.href = url;
+                    a.download = `resume_${data.name.replace(/\s+/g, '_')}_${Date.now()}.png`;
+                    document.body.appendChild(a);
+                    a.click();
+                    document.body.removeChild(a);
+                    URL.revokeObjectURL(url);
+
+                    console.log('✅ PNG图片已导出');
+                });
+            } catch (error) {
+                console.error('截图失败:', error);
+                alert('截图失败，请手动使用浏览器截图\n\n提示：\n- 按F12打开开发者工具\n- Ctrl+Shift+P打开命令\n- 输入"screenshot"并选择截图');
+            }
+        }
+
+        // Generate full standalone HTML
+        function generateFullHTML(data) {
+            const resumeHTML = generateResume(data);
+
+            return '<!DOCTYPE html>\n' +
+'<html lang="zh-CN">\n' +
+'<head>\n' +
+'    <meta charset="UTF-8">\n' +
+'    <meta name="viewport" content="width=device-width, initial-scale=1.0">\n' +
+'    <title>' + data.name + ' - Resume</title>\n' +
+'    <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/styles/github-dark.min.css">\n' +
+'    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"><\/script>\n' +
+'    <script src="https://cdn.jsdelivr.net/npm/highlight.js@11.9.0/highlight.min.js"><\/script>\n' +
+'    <style>\n' +
+'        * {\n' +
+'            margin: 0;\n' +
+'            padding: 0;\n' +
+'            box-sizing: border-box;\n' +
+'        }\n' +
+'\n' +
+'        body {\n' +
+'            font-family: -apple-system, BlinkMacSystemFont, \'Segoe UI\', sans-serif;\n' +
+'            background: #0d1117;\n' +
+'            color: #c9d1d9;\n' +
+'            padding: 40px 20px;\n' +
+'            line-height: 1.6;\n' +
+'        }\n' +
+'\n' +
+'        .resume-container {\n' +
+'            max-width: 1000px;\n' +
+'            margin: 0 auto;\n' +
+'            background: #0d1117;\n' +
+'        }\n' +
+'\n' +
+'        /* 复制所有resume相关的样式 */\n' +
+        getResumeStyles() + '\n' +
+'    </style>\n' +
+'</head>\n' +
+'<body>\n' +
+'    ' + resumeHTML + '\n' +
+'\n' +
+'    <script>\n' +
+'        // Configure marked.js\n' +
+'        marked.setOptions({\n' +
+'            breaks: true,\n' +
+'            gfm: true,\n' +
+'            highlight: function(code, lang) {\n' +
+'                if (lang && hljs.getLanguage(lang)) {\n' +
+'                    return hljs.highlight(code, { language: lang }).value;\n' +
+'                }\n' +
+'                return hljs.highlightAuto(code).value;\n' +
+'            }\n' +
+'        });\n' +
+'\n' +
+'        // Highlight code blocks\n' +
+'        document.addEventListener(\'DOMContentLoaded\', function() {\n' +
+'            document.querySelectorAll(\'pre code\').forEach((block) => {\n' +
+'                hljs.highlightElement(block);\n' +
+'            });\n' +
+'        });\n' +
+'    <\/script>\n' +
+'</body>\n' +
+'</html>';
+        }
+
+        // Get resume styles
+        function getResumeStyles() {
+            return `
+        .resume-header {
+            text-align: center;
+            padding: 40px 20px 50px;
+            border-bottom: 3px solid transparent;
+            border-image: linear-gradient(90deg, transparent, #58a6ff, #1f6feb, #58a6ff, transparent) 1;
+            margin-bottom: 40px;
+            position: relative;
+        }
+
+        .resume-header::after {
+            content: '';
+            position: absolute;
+            bottom: -3px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 100px;
+            height: 3px;
+            background: linear-gradient(90deg, #58a6ff, #1f6feb);
+            box-shadow: 0 0 20px rgba(88, 166, 255, 0.6);
+            animation: glow 2s ease-in-out infinite;
+        }
+
+        @keyframes glow {
+            0%, 100% { box-shadow: 0 0 20px rgba(88, 166, 255, 0.6), 0 0 40px rgba(88, 166, 255, 0.3); }
+            50% { box-shadow: 0 0 30px rgba(88, 166, 255, 0.8), 0 0 60px rgba(88, 166, 255, 0.5); }
+        }
+
+        .resume-avatar {
+            width: 150px;
+            height: 150px;
+            border-radius: 50%;
+            border: 4px solid transparent;
+            background-image: linear-gradient(#0d1117, #0d1117), linear-gradient(135deg, #58a6ff, #1f6feb, #238636);
+            background-origin: border-box;
+            background-clip: padding-box, border-box;
+            margin: 0 auto 20px;
+            object-fit: cover;
+            box-shadow: 0 0 30px rgba(88, 166, 255, 0.4), 0 0 60px rgba(31, 111, 235, 0.2);
+            animation: avatarGlow 3s ease-in-out infinite;
+        }
+
+        @keyframes avatarGlow {
+            0%, 100% { box-shadow: 0 0 30px rgba(88, 166, 255, 0.4), 0 0 60px rgba(31, 111, 235, 0.2); }
+            50% { box-shadow: 0 0 40px rgba(88, 166, 255, 0.6), 0 0 80px rgba(31, 111, 235, 0.4); }
+        }
+
+        .resume-name {
+            font-size: 2.5em;
+            font-weight: 600;
+            color: #58a6ff;
+            margin-bottom: 10px;
+        }
+
+        .resume-title {
+            font-size: 1.3em;
+            color: #8b949e;
+            margin-bottom: 20px;
+        }
+
+        .resume-contact {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            flex-wrap: wrap;
+            font-size: 0.9em;
+            color: #8b949e;
+        }
+
+        .resume-contact a {
+            color: #58a6ff;
+            text-decoration: none;
+        }
+
+        .resume-section {
+            margin-bottom: 40px;
+        }
+
+        .resume-section-title {
+            font-size: 2.2em;
+            font-weight: 800;
+            color: #58a6ff;
+            margin-bottom: 30px;
+            padding: 16px 0 16px 24px;
+            position: relative;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            letter-spacing: 0.5px;
+            border-left: 6px solid #58a6ff;
+            background: linear-gradient(90deg, rgba(88, 166, 255, 0.08) 0%, transparent 100%);
+            transition: all 0.3s ease;
+        }
+
+        .resume-section-title:hover {
+            border-left-color: #1f6feb;
+            background: linear-gradient(90deg, rgba(88, 166, 255, 0.12) 0%, transparent 100%);
+            padding-left: 28px;
+        }
+
+        .resume-summary {
+            background: linear-gradient(135deg, #161b22 0%, #1c2128 100%);
+            padding: 24px;
+            border-radius: 8px;
+            border: 1px solid #30363d;
+            border-left: 4px solid transparent;
+            border-image: linear-gradient(180deg, #238636, #2ea043) 1;
+            line-height: 1.8;
+            color: #c9d1d9;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3), inset 0 1px 0 rgba(88, 166, 255, 0.1);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .skill-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+        }
+
+        .skill-item {
+            background: linear-gradient(135deg, #161b22 0%, #1c2128 100%);
+            padding: 14px 18px;
+            border-radius: 8px;
+            border: 1px solid #30363d;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.2);
+        }
+
+        .skill-name {
+            color: #58a6ff;
+            font-weight: 600;
+            margin-bottom: 8px;
+        }
+
+        .skill-bar {
+            height: 10px;
+            background: #21262d;
+            border-radius: 6px;
+            overflow: hidden;
+        }
+
+        .skill-progress {
+            height: 100%;
+            background: linear-gradient(90deg, #238636 0%, #2ea043 50%, #3fb950 100%);
+            border-radius: 6px;
+        }
+
+        .experience-item, .project-item, .education-item {
+            background: linear-gradient(135deg, #161b22 0%, #1c2128 100%);
+            padding: 24px;
+            border-radius: 10px;
+            border: 1px solid #30363d;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+            position: relative;
+        }
+
+        .experience-item::before, .project-item::before, .education-item::before {
+            content: '';
+            position: absolute;
+            left: 0;
+            top: 0;
+            bottom: 0;
+            width: 4px;
+            background: linear-gradient(180deg, #58a6ff, #1f6feb);
+            box-shadow: 0 0 10px rgba(88, 166, 255, 0.5);
+        }
+
+        .item-header {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            gap: 15px;
+        }
+
+        .item-title {
+            font-size: 1.2em;
+            font-weight: 600;
+            color: #58a6ff;
+        }
+
+        .item-company {
+            color: #8b949e;
+            margin-top: 4px;
+        }
+
+        .item-date {
+            color: #8b949e;
+            font-size: 0.85em;
+            background: linear-gradient(135deg, #21262d 0%, #1c2128 100%);
+            padding: 6px 14px;
+            border-radius: 8px;
+            border: 1px solid #30363d;
+        }
+
+        .markdown-content {
+            color: #c9d1d9;
+            line-height: 1.8;
+        }
+
+        .markdown-content code {
+            background: linear-gradient(135deg, #1c2128 0%, #21262d 100%);
+            padding: 3px 8px;
+            border-radius: 4px;
+            color: #79c0ff;
+            font-family: monospace;
+            border: 1px solid #30363d;
+        }
+
+        .markdown-content strong {
+            color: #58a6ff;
+        }
+
+        .tech-tags {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 18px;
+        }
+
+        .tech-tag {
+            background: linear-gradient(135deg, #1c2128 0%, #21262d 100%);
+            color: #58a6ff;
+            padding: 6px 14px;
+            border-radius: 14px;
+            font-size: 0.85em;
+            border: 1px solid #30363d;
+        }
+            `;
+        }
+
+        // Save resume
+        function saveResume() {
+            const formData = {
+                avatar: avatarData,
+                name: document.getElementById('name').value,
+                title: document.getElementById('title').value,
+                email: document.getElementById('email').value,
+                phone: document.getElementById('phone').value,
+                location: document.getElementById('location').value,
+                github: document.getElementById('github').value,
+                website: document.getElementById('website').value,
+                linkedin: document.getElementById('linkedin').value,
+                summary: document.getElementById('summary').value,
+                skills: document.getElementById('skills').value,
+                experiences: [],
+                projects: [],
+                educations: []
+            };
+
+            // Save experiences
+            document.querySelectorAll('#experienceList .list-item').forEach(item => {
+                formData.experiences.push({
+                    title: item.querySelector('.exp-title').value,
+                    company: item.querySelector('.exp-company').value,
+                    start: item.querySelector('.exp-start').value,
+                    end: item.querySelector('.exp-end').value,
+                    description: item.querySelector('.exp-desc').value
+                });
+            });
+
+            // Save projects
+            document.querySelectorAll('#projectList .list-item').forEach(item => {
+                formData.projects.push({
+                    name: item.querySelector('.proj-name').value,
+                    url: item.querySelector('.proj-url').value,
+                    time: item.querySelector('.proj-time').value,
+                    description: item.querySelector('.proj-desc').value,
+                    techs: item.querySelector('.proj-tech').value
+                });
+            });
+
+            // Save educations
+            document.querySelectorAll('#educationList .list-item').forEach(item => {
+                formData.educations.push({
+                    degree: item.querySelector('.edu-degree').value,
+                    school: item.querySelector('.edu-school').value,
+                    start: item.querySelector('.edu-start').value,
+                    end: item.querySelector('.edu-end').value,
+                    details: item.querySelector('.edu-details').value
+                });
+            });
+
+            localStorage.setItem('devResumeData', JSON.stringify(formData));
+            alert('✅ Resume saved successfully!');
+        }
+
+        // Reset to default content
+        function resetToDefault() {
+            if (confirm('⚠️ This will clear all your data and load default content. Continue?')) {
+                // Clear localStorage
+                localStorage.removeItem('devResumeData');
+
+                // Clear all form fields
+                document.getElementById('name').value = '';
+                document.getElementById('title').value = '';
+                document.getElementById('email').value = '';
+                document.getElementById('phone').value = '';
+                document.getElementById('location').value = '';
+                document.getElementById('github').value = '';
+                document.getElementById('website').value = '';
+                document.getElementById('linkedin').value = '';
+                document.getElementById('summary').value = '';
+                document.getElementById('skills').value = '';
+
+                // Clear avatar
+                avatarData = '';
+                document.getElementById('avatarPreview').src = '';
+                document.getElementById('avatarPreview').classList.remove('has-image');
+
+                // Clear dynamic lists
+                document.getElementById('experienceList').innerHTML = '';
+                document.getElementById('projectList').innerHTML = '';
+                document.getElementById('educationList').innerHTML = '';
+
+                // Load default content
+                loadDefaultContent();
+
+                // Update preview
+                updatePreview();
+
+                alert('✅ Reset to default content successfully!');
+            }
+        }
+
+        // Load default content
+        function loadDefaultContent() {
+            // Basic info
+            document.getElementById('name').value = '张三';
+            document.getElementById('title').value = '高级全栈工程师';
+            document.getElementById('email').value = 'zhangsan@example.com';
+            document.getElementById('phone').value = '+86 138-0000-0000';
+            document.getElementById('location').value = '北京';
+            document.getElementById('github').value = 'github.com/zhangsan';
+            document.getElementById('website').value = 'blog.zhangsan.dev';
+            document.getElementById('linkedin').value = 'linkedin.com/in/zhangsan';
+
+            // Summary
+            document.getElementById('summary').value = `拥有 **5年+** 全栈开发经验，精通 \`Python\` 和 \`JavaScript\`
+
+- 主导过 **3个** 千万级用户产品的架构设计与开发
+- 擅长微服务架构、高并发系统优化和云原生应用开发
+- GitHub 开源贡献者，个人项目获得 \`1000+\` stars
+- 技术博客阅读量 **10万+**，热爱分享和学习新技术
+
+**核心优势：**
+- 🚀 性能优化专家，多次将系统响应时间优化至 **毫秒级**
+- 💡 技术选型与架构设计能力强，注重代码质量和可维护性
+- 🤝 优秀的团队协作和沟通能力，带领团队完成多个重点项目`;
+
+            // Skills
+            document.getElementById('skills').value = `Python/Django/FastAPI | 95%
+JavaScript/TypeScript/React | 90%
+Node.js/Express/Nest.js | 88%
+Docker/Kubernetes/CI/CD | 85%
+PostgreSQL/MongoDB/Redis | 90%
+AWS/GCP/云原生架构 | 80%
+Git/Linux/系统设计 | 92%
+微服务架构/分布式系统 | 88%`;
+
+            // Add experience with default content
+            addExperience();
+            const expItems = document.querySelectorAll('#experienceList .list-item');
+            const lastExp = expItems[expItems.length - 1];
+            lastExp.querySelector('.exp-title').value = '高级后端工程师';
+            lastExp.querySelector('.exp-company').value = 'ByteDance · 字节跳动';
+            lastExp.querySelector('.exp-start').value = '2021.06';
+            lastExp.querySelector('.exp-end').value = '至今';
+            lastExp.querySelector('.exp-desc').value = `- 主导 **微服务架构升级**，将单体应用拆分为 \`15\` 个微服务
+  - 系统 QPS 从 \`5000\` 提升至 \`30000+\`，响应时间降低 **60%**
+  - 引入 \`Kubernetes\` 进行容器编排，实现自动扩缩容
+
+- 优化数据库性能，解决慢查询问题
+  - 重构核心 SQL 查询，执行时间从 \`5s\` 降至 \`200ms\`
+  - 引入 \`Redis\` 分布式缓存，命中率达 **95%**
+  - 数据库读写分离，引入 \`Elasticsearch\` 处理复杂查询
+
+- 技术栈迁移与重构
+  - 使用 \`Python\` + \`FastAPI\` 重构核心服务，性能提升 **3倍**
+  - 引入 \`gRPC\` 替代 REST API，跨服务调用延迟降低 **40%**
+
+- 团队建设与技术分享
+  - 带领 **5人** 后端团队，负责 Code Review 和技术选型
+  - 定期组织技术分享会，提升团队整体技术水平`;
+
+            // Add second experience
+            addExperience();
+            const expItems2 = document.querySelectorAll('#experienceList .list-item');
+            const lastExp2 = expItems2[expItems2.length - 1];
+            lastExp2.querySelector('.exp-title').value = '全栈开发工程师';
+            lastExp2.querySelector('.exp-company').value = '某创业科技公司';
+            lastExp2.querySelector('.exp-start').value = '2019.03';
+            lastExp2.querySelector('.exp-end').value = '2021.05';
+            lastExp2.querySelector('.exp-desc').value = `- 从 **0到1** 搭建 SaaS 平台，服务企业客户 **500+** 家
+  - 独立完成前后端开发，使用 \`Vue.js\` + \`Django\`
+  - 年营收突破 **千万**，产品获得客户高度认可
+
+- 开发 RESTful API 和管理后台
+  - 设计并实现 **30+** 核心 API 接口
+  - 开发权限管理系统，支持多租户隔离
+
+- 性能优化与系统稳定性保障
+  - 优化数据库查询，慢查询减少 **80%**
+  - 实现自动化测试，单元测试覆盖率达 **85%**
+  - 系统可用性达到 **99.9%**`;
+
+            // Add project with default content
+            addProject();
+            const projItems = document.querySelectorAll('#projectList .list-item');
+            const lastProj = projItems[projItems.length - 1];
+            lastProj.querySelector('.proj-name').value = '智能客服系统';
+            lastProj.querySelector('.proj-url').value = 'https://github.com/zhangsan/ai-chatbot';
+            lastProj.querySelector('.proj-time').value = '2023.01 - 2023.08';
+            lastProj.querySelector('.proj-desc').value = `基于 **NLP** 和 **LLM** 的智能客服系统，集成 \`OpenAI GPT-4\` API
+
+**核心功能：**
+- 🤖 多轮对话引擎，支持上下文理解和意图识别
+- 📚 知识库向量检索，语义匹配准确率 **92%**
+- 🔍 实时意图识别和槽位填充，对话流转准确率 **95%**
+- 📊 数据分析看板，提供客服质量分析和用户画像
+
+**技术亮点：**
+- 使用 \`LangChain\` 构建对话流程管理
+- \`FAISS\` 向量数据库实现高效语义搜索
+- \`Redis\` 缓存对话历史，支持会话恢复
+- \`Docker Compose\` 一键部署，支持水平扩展
+
+**项目成果：**
+- ✅ 客服工作量减少 **50%**，人力成本降低显著
+- ✅ 用户满意度提升 **25%**，平均响应时间 < \`3s\`
+- ✅ 获得公司 **技术创新奖**，项目在 GitHub 开源后获 \`800+\` stars`;
+            lastProj.querySelector('.proj-tech').value = 'Python, FastAPI, LangChain, OpenAI, FAISS, Redis, PostgreSQL, Docker';
+
+            // Add second project
+            addProject();
+            const projItems2 = document.querySelectorAll('#projectList .list-item');
+            const lastProj2 = projItems2[projItems2.length - 1];
+            lastProj2.querySelector('.proj-name').value = '实时数据分析平台';
+            lastProj2.querySelector('.proj-url').value = '';
+            lastProj2.querySelector('.proj-time').value = '2022.05 - 2022.12';
+            lastProj2.querySelector('.proj-desc').value = `企业级实时数据分析平台，支持 **亿级** 数据秒级查询
+
+**核心功能：**
+- 📊 拖拽式报表设计器，支持 **20+** 图表类型
+- ⚡ 实时数据处理引擎，支持流式计算
+- 🔍 自定义 SQL 查询，支持复杂数据分析
+- 📈 实时监控大屏，WebSocket 推送数据更新
+
+**技术架构：**
+- 使用 \`Apache Flink\` 进行流式数据处理
+- \`ClickHouse\` 列式数据库，支持海量数据分析
+- \`React\` + \`D3.js\` 实现数据可视化
+- \`Kafka\` 消息队列保证数据可靠性
+
+**业务价值：**
+- 接入公司 **所有** 业务系统，统一数据出口
+- 为管理层提供实时业务洞察，辅助决策
+- 数据查询速度提升 **100倍**（5分钟 → 3秒）`;
+            lastProj2.querySelector('.proj-tech').value = 'React, D3.js, Apache Flink, ClickHouse, Kafka, WebSocket';
+
+            // Add education with default content
+            addEducation();
+            const eduItems = document.querySelectorAll('#educationList .list-item');
+            const lastEdu = eduItems[eduItems.length - 1];
+            lastEdu.querySelector('.edu-degree').value = '计算机科学与技术 本科';
+            lastEdu.querySelector('.edu-school').value = '清华大学';
+            lastEdu.querySelector('.edu-start').value = '2015.09';
+            lastEdu.querySelector('.edu-end').value = '2019.06';
+            lastEdu.querySelector('.edu-details').value = 'GPA: 3.8/4.0 | 专业排名: 前10% | 优秀毕业生';
+        }
+
+        // Load saved data
+        function loadSavedData() {
+            const saved = localStorage.getItem('devResumeData');
+            if (!saved) return false;
+
+            try {
+                const data = JSON.parse(saved);
+
+                // Load basic info
+                document.getElementById('name').value = data.name || '';
+                document.getElementById('title').value = data.title || '';
+                document.getElementById('email').value = data.email || '';
+                document.getElementById('phone').value = data.phone || '';
+                document.getElementById('location').value = data.location || '';
+                document.getElementById('github').value = data.github || '';
+                document.getElementById('website').value = data.website || '';
+                document.getElementById('linkedin').value = data.linkedin || '';
+                document.getElementById('summary').value = data.summary || '';
+                document.getElementById('skills').value = data.skills || '';
+
+                // Load avatar
+                if (data.avatar) {
+                    avatarData = data.avatar;
+                    document.getElementById('avatarPreview').src = avatarData;
+                    document.getElementById('avatarPreview').classList.add('has-image');
+                }
+
+                // Load experiences
+                if (data.experiences && data.experiences.length > 0) {
+                    document.getElementById('experienceList').innerHTML = '';
+                    data.experiences.forEach(exp => {
+                        addExperience();
+                        const items = document.querySelectorAll('#experienceList .list-item');
+                        const item = items[items.length - 1];
+                        item.querySelector('.exp-title').value = exp.title || '';
+                        item.querySelector('.exp-company').value = exp.company || '';
+                        item.querySelector('.exp-start').value = exp.start || '';
+                        item.querySelector('.exp-end').value = exp.end || '';
+                        item.querySelector('.exp-desc').value = exp.description || '';
+                    });
+                }
+
+                // Load projects
+                if (data.projects && data.projects.length > 0) {
+                    document.getElementById('projectList').innerHTML = '';
+                    data.projects.forEach(proj => {
+                        addProject();
+                        const items = document.querySelectorAll('#projectList .list-item');
+                        const item = items[items.length - 1];
+                        item.querySelector('.proj-name').value = proj.name || '';
+                        item.querySelector('.proj-url').value = proj.url || '';
+                        item.querySelector('.proj-time').value = proj.time || '';
+                        item.querySelector('.proj-desc').value = proj.description || '';
+                        item.querySelector('.proj-tech').value = proj.techs || '';
+                    });
+                }
+
+                // Load educations
+                if (data.educations && data.educations.length > 0) {
+                    document.getElementById('educationList').innerHTML = '';
+                    data.educations.forEach(edu => {
+                        addEducation();
+                        const items = document.querySelectorAll('#educationList .list-item');
+                        const item = items[items.length - 1];
+                        item.querySelector('.edu-degree').value = edu.degree || '';
+                        item.querySelector('.edu-school').value = edu.school || '';
+                        item.querySelector('.edu-start').value = edu.start || '';
+                        item.querySelector('.edu-end').value = edu.end || '';
+                        item.querySelector('.edu-details').value = edu.details || '';
+                    });
+                }
+
+            } catch (e) {
+                console.error('Error loading saved data:', e);
+                return false;
+            }
+
+            return true;
+        }
+    </script>
+</body>
+</html>
