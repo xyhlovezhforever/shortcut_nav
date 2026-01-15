@@ -1187,6 +1187,14 @@
                 <div class="nav-grid" id="migrationNav"></div>
             </section>
 
+            <!-- ========== 第三章节：智能体提示词 ========== -->
+            <section style="margin-top: 80px;">
+                <h1 style="font-size: 3em; text-align: center; background: linear-gradient(90deg, #43e97b, #38f9d7, #667eea); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 50px; text-shadow: 0 0 30px rgba(67, 233, 123, 0.5);">
+                    💬 智能体提示词
+                </h1>
+                <div class="nav-grid" id="promptsNav"></div>
+            </section>
+
             <footer>
                 <p>智能体开发文档 | 从理论到实践的完整闭环</p>
             </footer>
@@ -1292,6 +1300,24 @@
             { name: '迁移文档更新报告', url: './13-我的智能体开发/迁移文档/文档更新报告_2026_01_15.md', icon: '📅' }
         ];
 
+        // ========== 第三章节：智能体提示词 ==========
+        const PROMPTS_DOCS = [
+            { name: 'AI报告生成提示词', url: './13-我的智能体开发/智能体提示词/ai_reporter_prompts.rs', icon: '📊' },
+            { name: '继续规划提示词', url: './13-我的智能体开发/智能体提示词/continue_planning_prompts.rs', icon: '➡️' },
+            { name: '评估提示词', url: './13-我的智能体开发/智能体提示词/evaluation_prompts.rs', icon: '📈' },
+            { name: '消息格式化提示词', url: './13-我的智能体开发/智能体提示词/message_formatter_prompts.rs', icon: '📝' },
+            { name: '消息模板', url: './13-我的智能体开发/智能体提示词/message_templates.rs', icon: '📋' },
+            { name: '参数推断提示词', url: './13-我的智能体开发/智能体提示词/parameter_inference_prompts.rs', icon: '🎲' },
+            { name: '规划提示词', url: './13-我的智能体开发/智能体提示词/planning_prompts.rs', icon: '🎯' },
+            { name: '任务后评估提示词', url: './13-我的智能体开发/智能体提示词/post_task_evaluation_prompts.rs', icon: '✅' },
+            { name: '核心提示词', url: './13-我的智能体开发/智能体提示词/prompts.rs', icon: '💬' },
+            { name: '反思提示词', url: './13-我的智能体开发/智能体提示词/reflection_prompts.rs', icon: '🤔' },
+            { name: '重新规划提示词', url: './13-我的智能体开发/智能体提示词/replanning_prompts.rs', icon: '🔄' },
+            { name: '场景引导提示词', url: './13-我的智能体开发/智能体提示词/scene_guidance.rs', icon: '🧭' },
+            { name: '工具筛选提示词', url: './13-我的智能体开发/智能体提示词/selection_prompts.rs', icon: '🔧' },
+            { name: '单步修复提示词', url: './13-我的智能体开发/智能体提示词/single_step_repair_prompts.rs', icon: '🔨' }
+        ];
+
         // 创建流星
         function createMeteor() {
             const meteor = document.createElement('div');
@@ -1371,6 +1397,7 @@
             // 简化版本：直接渲染,不检查section
             renderNavItemsSimple(DEVELOPMENT_DOCS, 'developmentNav');
             renderNavItemsSimple(MIGRATION_DOCS, 'migrationNav');
+            renderNavItemsSimple(PROMPTS_DOCS, 'promptsNav');
         }
 
         // 简化的渲染函数
@@ -1483,7 +1510,9 @@
                 // 开发细节
                 ...DEVELOPMENT_DOCS.map(item => ({ ...item, category: '开发细节' })),
                 // 迁移文档
-                ...MIGRATION_DOCS.map(item => ({ ...item, category: '迁移文档' }))
+                ...MIGRATION_DOCS.map(item => ({ ...item, category: '迁移文档' })),
+                // 智能体提示词
+                ...PROMPTS_DOCS.map(item => ({ ...item, category: '智能体提示词' }))
             ];
         }
 
