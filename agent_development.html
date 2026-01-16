@@ -1179,20 +1179,12 @@
                 <div class="nav-grid" id="developmentNav"></div>
             </section>
 
-            <!-- ========== 第二章节：迁移文档 ========== -->
+            <!-- ========== 第二章节：架构与提示词 ========== -->
             <section style="margin-top: 80px;">
                 <h1 style="font-size: 3em; text-align: center; background: linear-gradient(90deg, #f093fb, #4facfe, #43e97b); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 50px; text-shadow: 0 0 30px rgba(79, 172, 254, 0.5);">
-                    📦 迁移文档
+                    🏗️ 架构与提示词
                 </h1>
-                <div class="nav-grid" id="migrationNav"></div>
-            </section>
-
-            <!-- ========== 第三章节：智能体提示词 ========== -->
-            <section style="margin-top: 80px;">
-                <h1 style="font-size: 3em; text-align: center; background: linear-gradient(90deg, #43e97b, #38f9d7, #667eea); -webkit-background-clip: text; -webkit-text-fill-color: transparent; margin-bottom: 50px; text-shadow: 0 0 30px rgba(67, 233, 123, 0.5);">
-                    💬 智能体提示词
-                </h1>
-                <div class="nav-grid" id="promptsNav"></div>
+                <div class="nav-grid" id="architecturePromptsNav"></div>
             </section>
 
             <footer>
@@ -1274,48 +1266,26 @@
             { name: '核心模块代码映射(2025-12-29)', url: './13-我的智能体开发/开发细节/archive-过时文档/核心模块代码映射_2025_12_29.md', icon: '📦' }
         ];
 
-        // ========== 第二章节：迁移文档 ==========
-        const MIGRATION_DOCS = [
-            { name: '00-迁移文档索引', url: './13-我的智能体开发/迁移文档/00-迁移文档索引.md', icon: '📋' },
-            { name: '01-项目概述与技术栈', url: './13-我的智能体开发/迁移文档/01-项目概述与技术栈.md', icon: '🎯' },
-            { name: '02-核心架构设计', url: './13-我的智能体开发/迁移文档/02-核心架构设计.md', icon: '🏗️' },
-            { name: '03-核心模块实现详解', url: './13-我的智能体开发/迁移文档/03-核心模块实现详解.md', icon: '⚙️' },
-            { name: '04-数据流转与参数解析', url: './13-我的智能体开发/迁移文档/04-数据流转与参数解析机制.md', icon: '🔄' },
-            { name: '05-LLM交互与提示词', url: './13-我的智能体开发/迁移文档/05-LLM交互与提示词系统.md', icon: '💬' },
-            { name: '06-反思与重规划机制', url: './13-我的智能体开发/迁移文档/06-反思与重规划机制.md', icon: '🤔' },
-            { name: '07-并行执行机制', url: './13-我的智能体开发/迁移文档/07-并行执行机制.md', icon: '⚡' },
-            { name: '08-API与服务接口', url: './13-我的智能体开发/迁移文档/08-API与服务接口.md', icon: '🔌' },
-            { name: '09-配置与部署指南', url: './13-我的智能体开发/迁移文档/09-配置与部署指南.md', icon: '🚀' },
-            { name: '10-迁移检查清单', url: './13-我的智能体开发/迁移文档/10-迁移检查清单.md', icon: '✅' },
-            { name: '11-AI报告生成器', url: './13-我的智能体开发/迁移文档/11-AI报告生成器与消息格式化.md', icon: '📊' },
-            { name: '12-任务缓存与命中', url: './13-我的智能体开发/迁移文档/12-任务缓存与命中机制.md', icon: '💾' },
-            { name: '13-上下文工程事件', url: './13-我的智能体开发/迁移文档/13-上下文工程事件详解.md', icon: '🎛️' },
-            { name: '14-Workflow工作流', url: './13-我的智能体开发/迁移文档/14-Workflow工作流管理.md', icon: '🔀' },
-            { name: '15-服务发现与注册', url: './13-我的智能体开发/迁移文档/15-服务发现与注册.md', icon: '🔍' },
-            { name: '16-Kafka事件系统', url: './13-我的智能体开发/迁移文档/16-Kafka事件系统.md', icon: '📡' },
-            { name: '17-Plan-with-Files', url: './13-我的智能体开发/迁移文档/17-Plan-with-Files模式.md', icon: '📁' },
-            { name: '18-移除轮数限制', url: './13-我的智能体开发/迁移文档/18-移除轮数限制机制.md', icon: '♾️' },
-            { name: '19-动态参数推断', url: './13-我的智能体开发/迁移文档/19-动态参数推断功能.md', icon: '🎲' },
-            { name: '项目架构解析', url: './13-我的智能体开发/迁移文档/项目架构解析.md', icon: '🔬' },
-            { name: '迁移文档更新报告', url: './13-我的智能体开发/迁移文档/文档更新报告_2026_01_15.md', icon: '📅' }
-        ];
+        // ========== 第二章节：架构与提示词 ==========
+        const ARCHITECTURE_PROMPTS_DOCS = [
+            // 架构文档
+            { name: '任务编排服务架构执行流程', url: './13-我的智能体开发/架构与提示词/任务编排服务架构执行流程文档.md', icon: '🏗️' },
 
-        // ========== 第三章节：智能体提示词 ==========
-        const PROMPTS_DOCS = [
-            { name: 'AI报告生成提示词', url: './13-我的智能体开发/智能体提示词/ai_reporter_prompts.rs', icon: '📊' },
-            { name: '继续规划提示词', url: './13-我的智能体开发/智能体提示词/continue_planning_prompts.rs', icon: '➡️' },
-            { name: '评估提示词', url: './13-我的智能体开发/智能体提示词/evaluation_prompts.rs', icon: '📈' },
-            { name: '消息格式化提示词', url: './13-我的智能体开发/智能体提示词/message_formatter_prompts.rs', icon: '📝' },
-            { name: '消息模板', url: './13-我的智能体开发/智能体提示词/message_templates.rs', icon: '📋' },
-            { name: '参数推断提示词', url: './13-我的智能体开发/智能体提示词/parameter_inference_prompts.rs', icon: '🎲' },
-            { name: '规划提示词', url: './13-我的智能体开发/智能体提示词/planning_prompts.rs', icon: '🎯' },
-            { name: '任务后评估提示词', url: './13-我的智能体开发/智能体提示词/post_task_evaluation_prompts.rs', icon: '✅' },
-            { name: '核心提示词', url: './13-我的智能体开发/智能体提示词/prompts.rs', icon: '💬' },
-            { name: '反思提示词', url: './13-我的智能体开发/智能体提示词/reflection_prompts.rs', icon: '🤔' },
-            { name: '重新规划提示词', url: './13-我的智能体开发/智能体提示词/replanning_prompts.rs', icon: '🔄' },
-            { name: '场景引导提示词', url: './13-我的智能体开发/智能体提示词/scene_guidance.rs', icon: '🧭' },
-            { name: '工具筛选提示词', url: './13-我的智能体开发/智能体提示词/selection_prompts.rs', icon: '🔧' },
-            { name: '单步修复提示词', url: './13-我的智能体开发/智能体提示词/single_step_repair_prompts.rs', icon: '🔨' }
+            // 提示词文件
+            { name: 'AI报告生成提示词', url: './13-我的智能体开发/架构与提示词/ai_reporter_prompts.rs', icon: '📊' },
+            { name: '继续规划提示词', url: './13-我的智能体开发/架构与提示词/continue_planning_prompts.rs', icon: '➡️' },
+            { name: '评估提示词', url: './13-我的智能体开发/架构与提示词/evaluation_prompts.rs', icon: '📈' },
+            { name: '消息格式化提示词', url: './13-我的智能体开发/架构与提示词/message_formatter_prompts.rs', icon: '📝' },
+            { name: '消息模板', url: './13-我的智能体开发/架构与提示词/message_templates.rs', icon: '📋' },
+            { name: '参数推断提示词', url: './13-我的智能体开发/架构与提示词/parameter_inference_prompts.rs', icon: '🎲' },
+            { name: '规划提示词', url: './13-我的智能体开发/架构与提示词/planning_prompts.rs', icon: '🎯' },
+            { name: '任务后评估提示词', url: './13-我的智能体开发/架构与提示词/post_task_evaluation_prompts.rs', icon: '✅' },
+            { name: '核心提示词', url: './13-我的智能体开发/架构与提示词/prompts.rs', icon: '💬' },
+            { name: '反思提示词', url: './13-我的智能体开发/架构与提示词/reflection_prompts.rs', icon: '🤔' },
+            { name: '重新规划提示词', url: './13-我的智能体开发/架构与提示词/replanning_prompts.rs', icon: '🔄' },
+            { name: '场景引导提示词', url: './13-我的智能体开发/架构与提示词/scene_guidance.rs', icon: '🧭' },
+            { name: '工具筛选提示词', url: './13-我的智能体开发/架构与提示词/selection_prompts.rs', icon: '🔧' },
+            { name: '单步修复提示词', url: './13-我的智能体开发/架构与提示词/single_step_repair_prompts.rs', icon: '🔨' }
         ];
 
         // 创建流星
@@ -1396,8 +1366,7 @@
         function renderAllCategories() {
             // 简化版本：直接渲染,不检查section
             renderNavItemsSimple(DEVELOPMENT_DOCS, 'developmentNav');
-            renderNavItemsSimple(MIGRATION_DOCS, 'migrationNav');
-            renderNavItemsSimple(PROMPTS_DOCS, 'promptsNav');
+            renderNavItemsSimple(ARCHITECTURE_PROMPTS_DOCS, 'architecturePromptsNav');
         }
 
         // 简化的渲染函数
@@ -1509,10 +1478,8 @@
             return [
                 // 开发细节
                 ...DEVELOPMENT_DOCS.map(item => ({ ...item, category: '开发细节' })),
-                // 迁移文档
-                ...MIGRATION_DOCS.map(item => ({ ...item, category: '迁移文档' })),
-                // 智能体提示词
-                ...PROMPTS_DOCS.map(item => ({ ...item, category: '智能体提示词' }))
+                // 架构与提示词
+                ...ARCHITECTURE_PROMPTS_DOCS.map(item => ({ ...item, category: '架构与提示词' }))
             ];
         }
 

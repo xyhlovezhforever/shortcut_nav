@@ -5,6 +5,28 @@
 use serde::{Deserialize, Serialize};
 use std::collections::HashMap;
 
+/// 安全地截断字符串，确保在UTF-8字符边界上截断
+///
+/// # 参数
+/// * `s` - 要截断的字符串
+/// * `max_bytes` - 最大字节数
+///
+/// # 返回
+/// 截断后的字符串引用，保证在有效的UTF-8字符边界上
+fn safe_truncate(s: &str, max_bytes: usize) -> &str {
+    if s.len() <= max_bytes {
+        return s;
+    }
+
+    // 从 max_bytes 开始向前查找有效的字符边界
+    let mut idx = max_bytes;
+    while idx > 0 && !s.is_char_boundary(idx) {
+        idx -= 1;
+    }
+
+    &s[..idx]
+}
+
 /// 动态参数推断的系统提示词
 pub const PARAMETER_INFERENCE_SYSTEM_PROMPT: &str = r#"你是一个专业的工具参数推断专家。你的任务是根据执行上下文为当前步骤的工具调用生成准确的参数。
 
@@ -197,7 +219,7 @@ impl ParameterInferencePromptBuilder {
             // 格式化输出（截断过长的输出）
             result.push_str("- **输出**:\n```json\n");
             let output_display = if record.output.len() > 1000 {
-                format!("{}... (输出已截断，共{}字节)", &record.output[..1000], record.output.len())
+                format!("{}... (输出已截断，共{}字节)", safe_truncate(&record.output, 1000), record.output.len())
             } else {
                 record.output.clone()
             };
